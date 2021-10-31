@@ -1,0 +1,72 @@
+package middleware
+
+import (
+	"log"
+	"nearby/biz/common"
+	"nearby/biz/config"
+	"nearby/biz/domain/val_obj"
+	"nearby/biz/model"
+
+	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt"
+)
+
+var notLogin = model.Response{
+	Meta: model.Meta{
+		Code: common.LoginFailErrCode,
+		Msg:  "user not login",
+	},
+}
+
+// Auth 校验用户是否登陆
+func Auth(jwtClient *JwtClient, noAuth map[string]bool) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		if noAuth[c.FullPath()] {
+			c.Next()
+			return
+		}
+		isLogin := isLoginAndDo(c, jwtClient, func(token *jwt.Token, claims *val_obj.UserClaims) {
+			c.Set(
+				common.UserProfile,
+				&val_obj.UserClaims{
+					UserID:   claims.UserID,
+					Nickname: claims.Nickname,
+					HeadURL:  claims.HeadURL,
+				},
+			)
+		})
+		// 模拟用户登陆, 测试用, 生产环境应失效!
+		if config.IsDebugMode() && c.Query("mock_login") != "" {
+			c.Set(
+				common.UserProfile,
+				&val_obj.UserClaims{
+					UserID:   305088049,
+					Nickname: "admin",
+					HeadURL:  "https://images.gitee.com/uploads/images/2021/0731/134131_a864d20c_7809561.jpeg",
+				},
+			)
+			isLogin = true
+		}
+		if !isLogin {
+			c.JSON(200, notLogin)
+			c.Abort()
+			return
+		}
+		c.Next()
+	}
+}
+
+func isLoginAndDo(c *gin.Context, client *JwtClient, do func(token *jwt.Token, claims *val_obj.UserClaims)) bool {
+	tokenString, err := c.Cookie(common.AuthTokenName)
+	if err != nil {
+		log.Printf("c.Cookie err: %+v", err)
+		return false
+	}
+	token, claims, err := client.ParseToken(tokenString)
+	if err != nil {
+		log.Printf("ParseToken fail, err: %+v", err)
+		return false
+	}
+	do(token, claims)
+	return true
+}

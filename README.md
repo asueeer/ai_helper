@@ -1,39 +1,71 @@
-# ai_helper
+## go版本需要是1.15(1.14会报错)
 
-#### 介绍
-{**以下是 Gitee 平台说明，您可以替换此简介**
-Gitee 是 OSCHINA 推出的基于 Git 的代码托管平台（同时支持 SVN）。专为开发者提供稳定、高效、安全的云端软件开发协作平台
-无论是个人、团队、或是企业，都能够用 Gitee 实现代码托管、项目管理、协作开发。企业项目请看 [https://gitee.com/enterprises](https://gitee.com/enterprises)}
+## references:
 
-#### 软件架构
-软件架构说明
+https://silenceper.com/wechat/
 
+## 代码分层
 
-#### 安装教程
+### 主要参考了https://tech.meituan.com/2017/12/22/ddd-in-practice.html
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+-handler // 控制器,用来接收用户请求 \
+-service // 应用服务层, \
+-domain // 领域层 \
+-dal // 数据持久化层
 
-#### 使用说明
+-domain \
+--aggregate // 聚合根, 一个由多个实体聚合起来的概念 \
+--entity // 实体, 有一个唯一id标识 \
+--val_obj // 值对象, 没有一个唯一id标识 \
+--model // 一些req,resp定义在这里 \
+---vo // view_object, 展示给前端的 \
+--service // 领域服务层
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+## id生成器
 
-#### 参与贡献
+参考 https://chai2010.cn/advanced-go-programming-book/ch6-cloud/ch6-01-dist-id.html
 
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
+但我们没有做成一个分布式的id生成器, 而是把workerId写死在了代码里, 这个是不太优雅的地方
 
+### todo 密码都是明文写在项目里的，之后走配置中心会比较好
 
-#### 特技
+###   
 
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+### redis-server运行命令，redis-run:
+
+redis-server /etc/redis.conf
+
+### 统计代码量
+
+find . -name "*.go"  -print | xargs wc -l
+
+### 消息系统设计
+
+为了防止读扩散，采用发件箱/收件箱的方式进行设计。
+
+当Sender发送一条消息后，gateway要做的事：\
+1.将该消息发送给消息队列进行后续的处理。（实现解耦）
+
+当消息队列收到一条消息后，要做的是：
+
+1. 将该消息存到发件箱. 持久化消息。
+2. 进行写扩散，将这条消息分成若干份发到群聊中的每个人的收件箱。
+
+当接收方读消息的时候, 要做的是：\
+从收件箱里找到自己要读的若干消息id；\
+收件箱不存消息内容，消息ids找到之后，从发件箱读取消息内容。
+
+### 技术优化点
+
+日志应该用开源的日志组件 \
+而不是自带的log包
+
+客服与单聊没有做解耦 
+
+### 有一个很难受的点: 
+
+路由表的控制只是在path上，没有在方法的粒度上进行权限控制。
+
+导致每次删除的时候，都需要校验一下用户是否存在...
+
+但是暂时没想清楚怎么优雅地解决这个问题。

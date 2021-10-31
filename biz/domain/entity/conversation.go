@@ -1,0 +1,125 @@
+package entity
+
+import (
+	"context"
+	"time"
+
+	"nearby/biz/common"
+	"nearby/biz/dal/db/po"
+	"nearby/biz/dal/db/repo"
+)
+
+type Participant struct {
+	UserID   int64  `json:"user_id"`
+	HeadURL  string `json:"head_url"`
+	Nickname string `json:"nickname"`
+}
+
+type Conversation struct {
+	ID           int64          `json:"id"`           // 主键自增id,无业务意义
+	ConvID       int64          `json:"conv_id"`      // 会话id, 会话的唯一标识
+	Type         string         `json:"type"`         // 会话类型
+	Creator      int64          `json:"creator"`      // 创建者id
+	Status       string         `json:"status"`       // 状态
+	LastMsg      *MessageTo     `json:"last_msg"`     // 最新的一条消息
+	Participants []*Participant `json:"participants"` // 会话参与者
+	Timestamp    time.Time      `json:"timestamp"`    // 会话时间戳
+}
+
+func (c *Conversation) ToPo() po.Conversation {
+	return po.Conversation{
+		ID:        c.ID,
+		ConvID:    c.ConvID,
+		Type:      c.Type,
+		Creator:   c.Creator,
+		Status:    c.Status,
+		Timestamp: c.Timestamp,
+	}
+}
+
+func (c *Conversation) IsHelperType() bool {
+	return c.Type == common.HelperConversationType
+}
+
+func NewConversationEntityByID(ctx context.Context, convID int64) (*Conversation, error) {
+	convRepo := repo.NewConversationRepo()
+	convPo, err := convRepo.GetConvPo(ctx,
+		repo.GetConvPoRequest{
+			ConvID: convID,
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	return ConstructConversationEntityByPo(ctx, convPo), err
+}
+
+// ConstructConversationEntityByPo 或者写一个叫ToConversationEntity的函数, 入参是个interface
+func ConstructConversationEntityByPo(ctx context.Context, convPo *po.Conversation) *Conversation {
+	return &Conversation{
+		ID:        convPo.ID,
+		ConvID:    convPo.ConvID,
+		Type:      convPo.Type,
+		Creator:   convPo.Creator,
+		Status:    convPo.Status,
+		Timestamp: convPo.Timestamp,
+	}
+}
+
+type GetMessagesRequest struct {
+	Limit         int64      `json:"limit"`
+	TimestampFrom *time.Time `json:"timestamp_from"`
+	TimestampTo   *time.Time `json:"timestamp_to"`
+	ViewerID      int64      `json:"viewer_id"`
+}
+
+type GetMessagesResponse struct {
+	Total    int64             `json:"total"`
+	MsgTos   []*po.MessageTo   `json:"msg_tos"`
+	MsgFroms []*po.MessageFrom `json:"msg_froms"`
+}
+
+func (c *Conversation) GetMessages(ctx context.Context, req GetMessagesRequest) (*GetMessagesResponse, error) {
+	msgRepo := repo.NewMessageRepo()
+	resp := &GetMessagesResponse{}
+	// 查询收件箱里的消息
+	msgTos, total, err := msgRepo.GetMessageTos(ctx, repo.GetMessagesRequest{
+		ConvID:        c.ConvID,
+		Limit:         req.Limit,
+		TimestampFrom: req.TimestampFrom,
+		TimestampTo:   req.TimestampTo,
+		OwnerID:       req.ViewerID,
+	})
+	if err != nil {
+		return nil, err
+	}
+	// 查询发件箱里的消息，便于上层组装信息
+	msgFroms, err := GetMessageFroms(ctx, msgTos)
+	if err != nil {
+		return nil, err
+	}
+	resp = &GetMessagesResponse{
+		Total:    total,
+		MsgFroms: msgFroms,
+		MsgTos:   msgTos,
+	}
+	return resp, nil
+}
+
+func GetMessageFroms(ctx context.Context, messageTos []*po.MessageTo) ([]*po.MessageFrom, error) {
+	if len(messageTos) == 0 {
+		return nil, nil
+	}
+	msgIDs := make([]int64, len(messageTos))
+	for i := range msgIDs {
+		msgIDs[i] = messageTos[i].MessageID
+	}
+	msgRepo := repo.NewMessageRepo()
+	msgFroms, err := msgRepo.GetMessageFroms(ctx, repo.GetMessageFromsRequest{
+		MessageIDs: msgIDs,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return msgFroms, nil
+}

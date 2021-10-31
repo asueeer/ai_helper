@@ -19,15 +19,15 @@ func register(r *gin.Engine) {
 		),
 	)
 
-	r.GET("/ping", handler.Ping)
+	r.GET("/api/ping", handler.Ping)
 
 	// 用户中心
-	r.GET("/profile/me", handler.ProfileMe)
-	r.POST("/get_token", handler.RegisterVisitor)
+	r.GET("/api/profile/me", handler.ProfileMe)
+	r.POST("/api/get_token", handler.RegisterVisitor)
 
 	// 会话&消息
-	r.POST("/im/create_conversation", handler.CreateConversation)
-	r.POST("/im/send_message", handler.SendMessage)
-	r.POST("/im/load_conversation_detail", handler.LoadConversationDetail)
-	r.POST("/im/load_conversations", handler.LoadConversations)
+	r.POST("/api/im/create_conversation", handler.CreateConversation)
+	r.POST("/api/im/send_message", handler.SendMessage)
+	r.POST("/api/im/load_conversation_detail", handler.LoadConversationDetail)
+	r.POST("/api/im/load_conversations", handler.LoadConversations)
 }

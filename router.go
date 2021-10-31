@@ -13,8 +13,8 @@ func register(r *gin.Engine) {
 		middleware.Auth(
 			middleware.JwtDefaultClient,
 			map[string]bool{
-				"/ping":      true,
-				"/get_token": true,
+				"/api/ping":      true,
+				"/api/get_token": true,
 			},
 		),
 	)

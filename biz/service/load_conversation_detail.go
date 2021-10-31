@@ -86,6 +86,7 @@ func (ss *LoadConversationDetailService) ConstructMsgVos(ctx context.Context, re
 	for i := range vos {
 		msgFrom := msgAggs[i].MessageFrom
 		vos[i] = &vo.Message{
+			MessageID:  cast.ToString(msgFrom.MessageID),
 			SenderID:   cast.ToString(msgFrom.SenderID),
 			ReceiverID: cast.ToString(msgFrom.ReceiverID),
 			Content:    msgFrom.Content.ToVo(),

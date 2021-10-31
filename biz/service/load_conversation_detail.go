@@ -25,6 +25,9 @@ func (ss *LoadConversationDetailService) checkAuth(ctx context.Context, convID i
 }
 
 func (ss *LoadConversationDetailService) Execute(ctx context.Context, req *model.LoadConversationDetailRequest) (resp *model.LoadConversationDetailResponse, err error) {
+	if req.Limit == 0 {
+		req.Limit = 40
+	}
 	if err = ss.checkParams(ctx, req); err != nil {
 		return nil, common.NewBizErr(common.BizErrCode, "参数校验错误", err)
 	}
@@ -60,8 +63,11 @@ func (ss *LoadConversationDetailService) Execute(ctx context.Context, req *model
 		Messages:  msgVos,
 		NewCursor: newCursor,
 	}
-	if len(resp.Messages) != 0 {
+	if len(resp.Messages) == cast.ToInt(req.Limit) {
 		resp.HasMore = true
+	}
+	if resp.NewCursor == req.Cursor {
+		resp.HasMore = false
 	}
 	return resp, nil
 }

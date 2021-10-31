@@ -58,7 +58,7 @@ type GetUserConvRelPosRequest struct {
 }
 
 func (repo *ConversationRepo) GetUserConvRelPos(ctx context.Context, req GetUserConvRelPosRequest) (pos []*po.UserConvRel, total int64, err error) {
-	sql := repo.db.Model(po.Conversation{})
+	sql := repo.db.Model(po.UserConvRel{})
 	pos = make([]*po.UserConvRel, 0)
 	sql = sql.Where("user_id = ?", req.UserID)
 	sql = sql.Joins("left join conversation on conversation.conv_id = user_conv_rel.conv_id")

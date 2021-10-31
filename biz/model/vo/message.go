@@ -1,6 +1,7 @@
 package vo
 
 type Message struct {
+	MessageID  int64      `json:"message_id"`  // 消息id
 	SenderID   int64      `json:"sender_id"`   // 发送方id
 	ReceiverID int64      `json:"receiver_id"` // 接收方id
 	Content    MsgContent `json:"content"`     // 消息内容

@@ -120,7 +120,7 @@ struct Meta{
 
 
 service ImService{
-    CreateConversationResponse CreateConversation(1: CreateConversationRequest req) (api.post="/im/create_conversaton"); // 创建会话
+    CreateConversationResponse CreateConversation(1: CreateConversationRequest req) (api.post="/im/create_conversation"); // 创建会话
     LoadConversationDetailResponse LoadConversation(1: LoadConversationDetailRequest req) (api.post="/im/load_conversation_detail"); // 加载会话详情
     // LoadConversationDetailByUserResponse LoadConversationDetailByUserRequest(1: LoadConversationDetailByUserRequest req); // 加载会话详情(用户视角)
     LoadConversationsResponse LoadConversations(1: LoadConversationsRequest req) (api.post="/im/load_conversations"); // 加载会话列表

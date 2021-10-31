@@ -7,7 +7,7 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-// 消息发件箱, 存储发送者角度的信息
+// MessageFrom 消息发件箱, 存储发送者角度的信息
 type MessageFrom struct {
 	ID         int64           `gorm:"column:id"`          // 主键自增id,无业务意义
 	MessageID  int64           `gorm:"column:message_id"`  // 消息id

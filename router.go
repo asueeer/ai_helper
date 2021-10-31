@@ -9,6 +9,7 @@ import (
 
 func register(r *gin.Engine) {
 	r.Use(
+		middleware.Cors(),
 		middleware.Auth(
 			middleware.JwtDefaultClient,
 			map[string]bool{

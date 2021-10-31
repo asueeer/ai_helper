@@ -1,11 +1,14 @@
 struct CreateConversationRequest{
-    1: i64 receiver_id;      // 接收方id
-    2: string type;          // 会话类型. "helper": 客服; "conv": 普通会话;
+    2: string type;          // 会话类型. "helper": 客服
+}
+
+struct CreateConversationData{
+    1: i64 conv_id; // 会话id
 }
 
 struct CreateConversationResponse{
     1: Meta meta;
-    2: i64 conv_id; // 会话id
+    2: CreateConversationData data;
 }
 
 struct SendMessageRequest{
@@ -29,10 +32,14 @@ struct MsgContent{
     5: string video_url;
 }
 
-struct SendMessageResponse{
-    1: Meta meta;
+struct SendMessageData{
     2: i64 message_id;        // 该消息的唯一标识id
     3: i64 conv_id;           // 该消息的会话id
+}
+
+struct SendMessageResponse{
+    1: Meta meta;
+    2: SendMessageData data;
 }
 
 struct LoadConversationsRequest{
@@ -40,11 +47,16 @@ struct LoadConversationsRequest{
     2: i64 cursor; // 相当于是offset
 }
 
-struct LoadConversationsResponse{
+struct LoadConversationsData{
     1: list<Conversation> conversations;
     2: i64 new_cursor;
     3: bool has_more;
     4: i64 total; // 会话总数
+}
+
+struct LoadConversationsResponse{
+    1: Meta meta;
+    2: LoadConversationsData data;
 }
 
 struct LoadConversationsByUserRequest{
@@ -53,9 +65,14 @@ struct LoadConversationsByUserRequest{
     3: bool has_more;
 }
 
-struct LoadConversationsByUserResponse{
+struct LoadConversationsByUserData{
     1: i64 limit;
     2: i64 cursor; // 拉取该cursor之后的所有会话
+}
+
+struct LoadConversationsByUserResponse{
+    1: Meta meta;
+    2: LoadConversationsByUserData data;
 }
 
 struct Conversation{
@@ -89,18 +106,26 @@ struct LoadConversationDetailByUserRequest{
     3: i64 limit;           // 默认50条
 }
 
+struct LoadConversationDetailData{
+    1: list<Message> messages;
+    2: bool has_more;  // 是否包含更多会话
+    3: i64 new_cursor; // 下一次拉取前, 需要传给后端的时间戳
+}
+
 struct LoadConversationDetailResponse{
     1: Meta meta;
-    2: list<Message> messages;
-    3: bool has_more;  // 是否包含更多会话
-    4: i64 new_cursor; // 下一次拉取前, 需要传给后端的时间戳
+    2: LoadConversationDetailData data;
+}
+
+struct LoadConversationDetailByUserData{
+    1: list<Message> messages;
+    2: bool has_more;  // 是否包含更多会话
+    3: i64 new_cursor; // 下一次拉取前, 需要传给后端的时间戳
 }
 
 struct LoadConversationDetailByUserResponse{
     1: Meta meta;
-    2: list<Message> messages;
-    3: bool has_more;  // 是否包含更多会话
-    4: i64 new_cursor; // 下一次拉取前, 需要传给后端的时间戳
+    2: LoadConversationDetailByUserData data;
 }
 
 

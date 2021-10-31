@@ -29,8 +29,12 @@ type SendMessageRequest struct {
 	Timestamp int64  `form:"timestamp" json:"timestamp"` // 消息时间戳
 }
 
-type SendMessageResponse struct {
-	Meta      Meta  `json:"meta"`
+type SendMessageData struct {
 	MessageID int64 `json:"message_id"` // 该消息的唯一标识id
 	ConvID    int64 `json:"conv_id"`    // 该消息所属的会话id
+}
+
+type SendMessageResponse struct {
+	Meta Meta            `json:"meta"`
+	Data SendMessageData `json:"data"`
 }

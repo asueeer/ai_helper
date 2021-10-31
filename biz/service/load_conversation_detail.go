@@ -59,15 +59,17 @@ func (ss *LoadConversationDetailService) Execute(ctx context.Context, req *model
 		return nil, err
 	}
 	resp = &model.LoadConversationDetailResponse{
-		Meta:      common.MetaOk,
-		Messages:  msgVos,
-		NewCursor: newCursor,
+		Meta: common.MetaOk,
+		Data: model.LoadConversationDetailData{
+			Messages:  msgVos,
+			NewCursor: newCursor,
+		},
 	}
-	if len(resp.Messages) == cast.ToInt(req.Limit) {
-		resp.HasMore = true
+	if len(resp.Data.Messages) == cast.ToInt(req.Limit) {
+		resp.Data.HasMore = true
 	}
-	if resp.NewCursor == req.Cursor {
-		resp.HasMore = false
+	if resp.Data.NewCursor == req.Cursor {
+		resp.Data.HasMore = false
 	}
 	return resp, nil
 }

@@ -9,10 +9,14 @@ type LoadConversationDetailRequest struct {
 	Role   string `form:"role" json:"role"`                          // 用户身份; "visitor" 游客; "be_helper": 后台客服
 }
 
-type LoadConversationDetailResponse struct {
-	Meta Meta `json:"meta"`
-
+type LoadConversationDetailData struct {
 	Messages  []*vo.Message `json:"messages"`   // 消息列表
 	HasMore   bool          `json:"has_more"`   // 是否包含更多会话
 	NewCursor int64         `json:"new_cursor"` // 下一次拉取前, 需要传给后端的时间戳
+}
+
+type LoadConversationDetailResponse struct {
+	Meta Meta `json:"meta"`
+
+	Data LoadConversationDetailData `json:"data"`
 }

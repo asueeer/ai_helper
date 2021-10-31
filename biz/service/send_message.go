@@ -30,9 +30,11 @@ func (ss *SendMessageService) Execute(ctx context.Context, req *model.SendMessag
 	}
 
 	return &model.SendMessageResponse{
-		Meta:      common.MetaOk,
-		MessageID: msgFromEntity.MessageID,
-		ConvID:    msgFromEntity.ConvID,
+		Meta: common.MetaOk,
+		Data: model.SendMessageData{
+			MessageID: msgFromEntity.MessageID,
+			ConvID:    msgFromEntity.ConvID,
+		},
 	}, nil
 }
 

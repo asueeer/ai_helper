@@ -31,8 +31,10 @@ func (ss *CreateConversationService) CreateHelperConv(ctx context.Context) (resp
 		return nil, common.NewBizErr(common.BizErrCode, "创建会话失败", err)
 	}
 	resp = &model.CreateConversationResponse{
-		Meta:   common.MetaOk,
-		ConvID: entity.ConvID,
+		Meta: common.MetaOk,
+		Data: model.CreateConversationData{
+			ConvID: entity.ConvID,
+		},
 	}
 	return resp, nil
 }

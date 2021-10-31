@@ -23,11 +23,11 @@ func register(r *gin.Engine) {
 
 	// 用户中心
 	r.GET("/profile/me", handler.ProfileMe)
-	r.POST("/get_token", handler.RegisterVisitor)
+	r.GET("/get_token", handler.RegisterVisitor)
 
 	// 会话&消息
-	r.POST("/im/create_conversation", handler.CreateConversation)
-	r.POST("/im/send_message", handler.SendMessage)
-	r.POST("/im/load_conversation_detail", handler.LoadConversationDetail)
-	r.POST("/im/load_conversations", handler.LoadConversations)
+	r.GET("/im/create_conversation", handler.CreateConversation)
+	r.GET("/im/send_message", handler.SendMessage)
+	r.GET("/im/load_conversation_detail", handler.LoadConversationDetail)
+	r.GET("/im/load_conversations", handler.LoadConversations)
 }

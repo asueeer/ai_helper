@@ -39,7 +39,7 @@ func (ss *LoadConversationDetailService) Execute(ctx context.Context, req *model
 	if req.Cursor == "0" {
 		req.Cursor = cast.ToString(time.Now().Unix())
 	}
-	timestampTo := cast.ToTime(req.Cursor)
+	timestampTo := cast.ToTime(cast.ToInt64(req.Cursor))
 
 	viewerID, err := ss.GetViewerID(ctx, req)
 	if err != nil {

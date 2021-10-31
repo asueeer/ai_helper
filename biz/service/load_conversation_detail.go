@@ -71,6 +71,9 @@ func (ss *LoadConversationDetailService) Execute(ctx context.Context, req *model
 	if resp.Data.NewCursor == req.Cursor {
 		resp.Data.HasMore = false
 	}
+	if !resp.Data.HasMore {
+		resp.Data.NewCursor = 0
+	}
 	return resp, nil
 }
 

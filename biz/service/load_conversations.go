@@ -44,7 +44,7 @@ func (ss *LoadConversationsService) ToConvVos(ctx context.Context, entities []*e
 	vos := make([]*vo.Conversation, len(entities))
 	for i := range vos {
 		vos[i] = &vo.Conversation{
-			ConvID:       entities[i].ConvID,
+			ConvID:       cast.ToString(entities[i].ConvID),
 			Type:         entities[i].Type,
 			UnRead:       0,
 			LastMsg:      vo.Message{},

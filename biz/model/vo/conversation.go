@@ -1,12 +1,12 @@
 package vo
 
 type Participant struct {
-	UserID  int64  `json:"user_id"`  // 用户id
+	UserID  string `json:"user_id"`  // 用户id
 	HeadURL string `json:"head_url"` // 头像
 }
 
 type Conversation struct {
-	ConvID       int64         `json:"conv_id"`      // 会话id
+	ConvID       string        `json:"conv_id"`      // 会话id
 	Type         string        `json:"type"`         // 会话类型
 	UnRead       int32         `json:"un_read"`      // 未读消息数
 	LastMsg      Message       `json:"last_msg"`     // 最近一条消息

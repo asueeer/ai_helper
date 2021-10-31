@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"github.com/spf13/cast"
 	"nearby/biz/dal/db/po"
 	"nearby/biz/domain/val_obj"
 	"nearby/biz/middleware"
@@ -55,7 +56,7 @@ func NewUserEntityByPo(po *po.User) *User {
 
 func (user *User) ToVO() *vo.User {
 	return &vo.User{
-		UserID:   user.UserID,
+		UserID:   cast.ToString(user.UserID),
 		Nickname: user.Nickname,
 		HeadURL:  user.HeadURL,
 	}

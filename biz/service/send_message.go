@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"encoding/json"
+	"github.com/spf13/cast"
 	"log"
 	"nearby/biz/common"
 	"nearby/biz/domain/entity"
@@ -32,8 +33,8 @@ func (ss *SendMessageService) Execute(ctx context.Context, req *model.SendMessag
 	return &model.SendMessageResponse{
 		Meta: common.MetaOk,
 		Data: model.SendMessageData{
-			MessageID: msgFromEntity.MessageID,
-			ConvID:    msgFromEntity.ConvID,
+			MessageID: cast.ToString(msgFromEntity.MessageID),
+			ConvID:    cast.ToString(msgFromEntity.ConvID),
 		},
 	}, nil
 }
@@ -51,9 +52,9 @@ func (ss *SendMessageService) SendMsg(ctx context.Context, req *model.SendMessag
 	}
 	var messageDomainService domainService.MessageService
 	msgFromEntity, err := messageDomainService.SendMessage(ctx, domainService.SendMessageRequest{
-		ConvID:     req.ConvID,
+		ConvID:     cast.ToInt64(req.ConvID),
 		Role:       req.Role,
-		ReceiverID: req.ReceiverID,
+		ReceiverID: cast.ToInt64(req.ReceiverID),
 		Content:    msgJson,
 		Type:       req.Type,
 		Status:     req.Status,

@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"github.com/spf13/cast"
 	"log"
 	"nearby/biz/common"
 	domainService "nearby/biz/domain/service"
@@ -33,7 +34,7 @@ func (ss *CreateConversationService) CreateHelperConv(ctx context.Context) (resp
 	resp = &model.CreateConversationResponse{
 		Meta: common.MetaOk,
 		Data: model.CreateConversationData{
-			ConvID: entity.ConvID,
+			ConvID: cast.ToString(entity.ConvID),
 		},
 	}
 	return resp, nil

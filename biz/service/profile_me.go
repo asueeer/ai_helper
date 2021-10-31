@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"github.com/spf13/cast"
 	"nearby/biz/common"
 	"nearby/biz/model"
 )
@@ -15,7 +16,7 @@ func (ss *ProfileMeService) Execute(ctx context.Context, req *model.ProfileMeReq
 		Meta: common.MetaOk,
 		Data: model.ProfileMeData{
 			User: model.User{
-				UserID:   user.UserID,
+				UserID:   cast.ToString(user.UserID),
 				Nickname: user.Nickname,
 				HeadURL:  user.HeadURL,
 			},

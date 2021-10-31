@@ -25,19 +25,19 @@ func (ss *LoadConversationDetailService) checkAuth(ctx context.Context, convID i
 }
 
 func (ss *LoadConversationDetailService) Execute(ctx context.Context, req *model.LoadConversationDetailRequest) (resp *model.LoadConversationDetailResponse, err error) {
-	if req.Limit == 0 {
-		req.Limit = 40
+	if req.Limit == "0" {
+		req.Limit = "40"
 	}
 	if err = ss.checkParams(ctx, req); err != nil {
 		return nil, common.NewBizErr(common.BizErrCode, "参数校验错误", err)
 	}
 	// 校验当前用户有没有权限查看当前会话
-	if ss.checkAuth(ctx, req.ConvID) != nil {
+	if ss.checkAuth(ctx, cast.ToInt64(req.ConvID)) != nil {
 		return nil, common.NewBizErr(common.EvilViewErrCode, "ops, 会话找不到了...", err)
 	}
 	var conversationLoader domainService.ConversationLoadService
-	if req.Cursor == 0 {
-		req.Cursor = time.Now().Unix()
+	if req.Cursor == "0" {
+		req.Cursor = cast.ToString(time.Now().Unix())
 	}
 	timestampTo := cast.ToTime(req.Cursor)
 
@@ -46,8 +46,8 @@ func (ss *LoadConversationDetailService) Execute(ctx context.Context, req *model
 		return nil, common.NewBizErr(common.EvilViewErrCode, "ops, 会话找不到了...", err)
 	}
 	convResp, err := conversationLoader.GetConversation(ctx, domainService.GetConversationRequest{
-		ConvID:      req.ConvID,
-		Limit:       req.Limit,
+		ConvID:      cast.ToInt64(req.ConvID),
+		Limit:       cast.ToInt64(req.Limit),
 		TimestampTo: &timestampTo,
 		ViewerID:    viewerID,
 	})
@@ -62,7 +62,7 @@ func (ss *LoadConversationDetailService) Execute(ctx context.Context, req *model
 		Meta: common.MetaOk,
 		Data: model.LoadConversationDetailData{
 			Messages:  msgVos,
-			NewCursor: newCursor,
+			NewCursor: cast.ToString(newCursor),
 		},
 	}
 	if len(resp.Data.Messages) == cast.ToInt(req.Limit) {
@@ -72,7 +72,7 @@ func (ss *LoadConversationDetailService) Execute(ctx context.Context, req *model
 		resp.Data.HasMore = false
 	}
 	if !resp.Data.HasMore {
-		resp.Data.NewCursor = 0
+		resp.Data.NewCursor = "0"
 	}
 	return resp, nil
 }

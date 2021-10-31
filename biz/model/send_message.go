@@ -3,8 +3,8 @@ package model
 import "nearby/biz/model/vo"
 
 type SendMessageRequest struct {
-	ReceiverID int64 `form:"receiver_id" json:"receiver_id"` // 接收方id, 可不传;
-	ConvID     int64 `form:"conv_id" json:"conv_id"`         // 会话id
+	ReceiverID string `form:"receiver_id" json:"receiver_id"` // 接收方id, 可不传;
+	ConvID     string `form:"conv_id" json:"conv_id"`         // 会话id
 	/*
 		枚举值[
 		"visitor": 游客;
@@ -30,8 +30,8 @@ type SendMessageRequest struct {
 }
 
 type SendMessageData struct {
-	MessageID int64 `json:"message_id"` // 该消息的唯一标识id
-	ConvID    int64 `json:"conv_id"`    // 该消息所属的会话id
+	MessageID string `json:"message_id"` // 该消息的唯一标识id
+	ConvID    string `json:"conv_id"`    // 该消息所属的会话id
 }
 
 type SendMessageResponse struct {

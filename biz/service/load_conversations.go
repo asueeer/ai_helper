@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"github.com/spf13/cast"
 	"nearby/biz/common"
 	"nearby/biz/domain/entity"
 	domainService "nearby/biz/domain/service"
@@ -22,7 +23,7 @@ func (ss *LoadConversationsService) Execute(ctx context.Context, req *model.Load
 	convEntities, total, err := convsLoader.LoadConversations(ctx, domainService.LoadConversationsRequest{
 		UserID:        user.UserID,
 		Limit:         req.Limit,
-		TimestampFrom: req.Cursor,
+		TimestampFrom: cast.ToInt64(req.Cursor),
 	})
 	if err != nil {
 		return nil, common.NewBizErr(common.BizErrCode, err.Error(), err)
@@ -32,7 +33,7 @@ func (ss *LoadConversationsService) Execute(ctx context.Context, req *model.Load
 		Meta: common.MetaOk,
 		Data: model.LoadConversationData{
 			Conversations: ss.ToConvVos(ctx, convEntities),
-			NewCursor:     0,
+			NewCursor:     "0",
 			HasMore:       false,
 			Total:         total,
 		},

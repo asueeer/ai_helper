@@ -5,7 +5,11 @@ type (
 	}
 
 	ProfileMeResponse struct {
-		Meta Meta `json:"meta"`
+		Meta Meta          `json:"meta"`
+		Data ProfileMeData `json:"data"`
+	}
+
+	ProfileMeData struct {
 		User User `json:"user"`
 	}
 

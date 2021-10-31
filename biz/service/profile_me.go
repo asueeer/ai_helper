@@ -13,10 +13,12 @@ func (ss *ProfileMeService) Execute(ctx context.Context, req *model.ProfileMeReq
 	user := common.GetUser(ctx)
 	resp = &model.ProfileMeResponse{
 		Meta: common.MetaOk,
-		User: model.User{
-			UserID:   user.UserID,
-			Nickname: user.Nickname,
-			HeadURL:  user.HeadURL,
+		Data: model.ProfileMeData{
+			User: model.User{
+				UserID:   user.UserID,
+				Nickname: user.Nickname,
+				HeadURL:  user.HeadURL,
+			},
 		},
 	}
 	return resp, nil

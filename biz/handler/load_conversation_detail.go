@@ -4,6 +4,7 @@ import (
 	"ai_helper/biz/common"
 	"ai_helper/biz/model"
 	"ai_helper/biz/service"
+	"fmt"
 	"github.com/gin-gonic/gin/binding"
 
 	"github.com/gin-gonic/gin"
@@ -14,6 +15,7 @@ func LoadConversationDetail(c *gin.Context) {
 	// 加载会话详情
 	req := &model.LoadConversationDetailRequest{}
 	if err := c.ShouldBindBodyWith(req, binding.JSON); err != nil {
+		fmt.Println(err)
 		c.JSON(400, err.Error())
 		return
 	}

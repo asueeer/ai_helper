@@ -13,14 +13,7 @@ type CreateConversationService struct {
 }
 
 func (ss *CreateConversationService) Execute(ctx context.Context, req *model.CreateConversationRequest) (resp *model.CreateConversationResponse, err error) {
-	switch req.Type {
-	// 不同的会话类型创建逻辑不同
-	// 客服会话: 不需要在req中填写ReceiverID, 固定ReceiverID为小助手的用户id
-	case common.HelperConversationType:
-		return ss.CreateHelperConv(ctx)
-	default:
-		return nil, common.NewBizErr(common.BizErrCode, "不支持的会话类型", nil)
-	}
+	return ss.CreateHelperConv(ctx)
 }
 
 func (ss *CreateConversationService) CreateHelperConv(ctx context.Context) (resp *model.CreateConversationResponse, err error) {

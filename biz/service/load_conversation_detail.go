@@ -99,8 +99,16 @@ func (ss *LoadConversationDetailService) ConstructMsgVos(ctx context.Context, re
 		}
 		newCursor = util.MinInt64(newCursor, msgFrom.Timestamp.Unix())
 	}
-
+	vos = ss.Reverse(vos)
 	return vos, newCursor, nil
+}
+
+func (ss *LoadConversationDetailService) Reverse(vos []*vo.Message) []*vo.Message {
+	ret := make([]*vo.Message, len(vos))
+	for i := 0; i < len(vos); i++ {
+		ret[i] = vos[len(vos)-i-i]
+	}
+	return ret
 }
 
 func (ss *LoadConversationDetailService) GetViewerID(ctx context.Context, req *model.LoadConversationDetailRequest) (viewerID int64, err error) {

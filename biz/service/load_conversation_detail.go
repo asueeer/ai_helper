@@ -37,7 +37,7 @@ func (ss *LoadConversationDetailService) Execute(ctx context.Context, req *model
 	}
 	var conversationLoader domainService.ConversationLoadService
 	if req.Cursor == "0" {
-		req.Cursor = cast.ToString(time.Now() * 1000)
+		req.Cursor = cast.ToString(time.Now().Unix() * 1000)
 	}
 	timestampTo := cast.ToTime(cast.ToInt64(req.Cursor) / 1000)
 

@@ -147,7 +147,7 @@ struct Meta{
 service ImService{
     CreateConversationResponse CreateConversation(1: CreateConversationRequest req) (api.post="/im/create_conversation"); // 创建会话
     LoadConversationDetailResponse LoadConversation(1: LoadConversationDetailRequest req) (api.post="/im/load_conversation_detail"); // 加载会话详情
-    // LoadConversationDetailByUserResponse LoadConversationDetailByUserRequest(1: LoadConversationDetailByUserRequest req); // 加载会话详情(用户视角)
+     LoadConversationDetailByUserResponse LoadConversationDetailByUser(1: LoadConversationDetailByUserRequest req); // 加载会话详情(用户视角)
     LoadConversationsResponse LoadConversations(1: LoadConversationsRequest req) (api.post="/im/load_conversations"); // 加载会话列表
     // LoadConversationsByUserResponse LoadConversationsByUser(1: LoadConversationsByUserRequest); // 加载会话列表（用户视角）
     SendMessageResponse SendMessage(1: SendMessageRequest req) (api.post="im/send_message"); // 发送消息

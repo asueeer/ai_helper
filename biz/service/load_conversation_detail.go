@@ -95,9 +95,9 @@ func (ss *LoadConversationDetailService) ConstructMsgVos(ctx context.Context, re
 			Content:    msgFrom.Content.ToVo(),
 			Type:       msgFrom.Type,
 			Status:     msgFrom.Status,
-			Timestamp:  msgFrom.Timestamp.Unix(),
+			Timestamp:  msgFrom.Timestamp.Unix() * 1000,
 		}
-		newCursor = util.MinInt64(newCursor, msgFrom.Timestamp.Unix())
+		newCursor = util.MinInt64(newCursor, msgFrom.Timestamp.Unix()*1000)
 	}
 	vos = ss.Reverse(vos)
 	return vos, newCursor, nil

@@ -55,7 +55,7 @@ func (ss *MessageService) ConstructMessageAggregate(ctx context.Context, req Sen
 		},
 	}
 	// 以客服的身份发消息
-	if req.Role == "helper" {
+	if req.Role == common.ConvRoleHelper {
 		msgAgg.MessageFrom.SenderID = common.HelperID
 	}
 	// 装载消息内容

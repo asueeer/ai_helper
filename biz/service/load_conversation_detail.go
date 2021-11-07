@@ -95,6 +95,11 @@ func (ss *LoadConversationDetailService) ConstructMsgVos(ctx context.Context, re
 			Status:     msgFrom.Status,
 			Timestamp:  msgFrom.Timestamp.Unix() * 1000,
 		}
+		if msgFrom.SenderID == common.HelperID {
+			vos[i].Role = common.ConvRoleHelper
+		} else {
+			vos[i].Role = common.ConvRoleVisitor
+		}
 		newCursor = util.MinInt64(newCursor, msgFrom.Timestamp.Unix()*1000)
 	}
 	vos = ss.Reverse(vos)

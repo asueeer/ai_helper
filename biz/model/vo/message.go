@@ -8,6 +8,7 @@ type Message struct {
 	Type       string     `json:"type"`        // 消息类型
 	Status     string     `json:"status"`      // 消息状态
 	Timestamp  int64      `json:"timestamp"`   // 消息时间戳
+	Role       string     `json:"role"`        // 消息发送者的身份, 游客:"visitor"; 客服:"helper"
 }
 
 type MsgContent struct {

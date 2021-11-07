@@ -45,7 +45,6 @@ func (ss *MessageService) SendMessage(ctx context.Context, req SendMessageReques
 
 func (ss *MessageService) ConstructMessageAggregate(ctx context.Context, req SendMessageRequest) (*aggregate.MessageAggregate, error) {
 	user := common.GetUser(ctx)
-
 	msgAgg := aggregate.MessageAggregate{
 		MessageFrom: &entity.MessageFrom{
 			SenderID:   user.UserID,
@@ -54,6 +53,10 @@ func (ss *MessageService) ConstructMessageAggregate(ctx context.Context, req Sen
 			ReceiverID: req.ReceiverID,
 			Type:       req.Type,
 		},
+	}
+	// 以客服的身份发消息
+	if req.Role == "helper" {
+		msgAgg.MessageFrom.SenderID = common.HelperID
 	}
 	// 装载消息内容
 	err := json.Unmarshal(req.Content, &msgAgg.MessageFrom.Content)

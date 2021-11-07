@@ -29,12 +29,14 @@ func (agg *MessageAggregate) SyncReceiverBox(ctx context.Context) error {
 			从用户-会话关系表里查找到与该会话有关的用户,
 			给这些用户的收件箱发送消息, 持久化起来
 	*/
-	if err := agg.FindConvEntity(ctx); err != nil {
+	var err error
+	_, err = agg.FindConvEntity(ctx)
+	if err != nil {
 		return err
 	}
 	msgTos := agg.ConstructMessageTos(ctx)
 	for i := range msgTos {
-		err := msgTos[i].Persist(ctx)
+		err = msgTos[i].Persist(ctx)
 		if err != nil {
 			return err
 		}
@@ -42,13 +44,13 @@ func (agg *MessageAggregate) SyncReceiverBox(ctx context.Context) error {
 	return nil
 }
 
-func (agg *MessageAggregate) FindConvEntity(ctx context.Context) error {
+func (agg *MessageAggregate) FindConvEntity(ctx context.Context) (*entity.Conversation, error) {
 	convEntity, err := entity.NewConversationEntityByID(ctx, agg.MessageFrom.ConvID)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	agg.Conv = convEntity
-	return nil
+	return convEntity, nil
 }
 
 func (agg *MessageAggregate) ConstructMessageTos(ctx context.Context) []*entity.MessageTo {

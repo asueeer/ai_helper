@@ -39,7 +39,7 @@ func (ss *LoadConversationDetailService) Execute(ctx context.Context, req *model
 	if req.Cursor == "0" {
 		req.Cursor = cast.ToString(time.Now().Unix())
 	}
-	timestampTo := cast.ToTime(cast.ToInt64(req.Cursor))
+	timestampTo := cast.ToTime(cast.ToInt64(req.Cursor) / 1000)
 
 	viewerID, err := ss.GetViewerID(ctx, req)
 	if err != nil {
@@ -55,6 +55,9 @@ func (ss *LoadConversationDetailService) Execute(ctx context.Context, req *model
 		return nil, err
 	}
 	msgVos, newCursor, err := ss.ConstructMsgVos(ctx, convResp)
+
+	newCursor *= 1000
+
 	if err != nil {
 		return nil, err
 	}
@@ -73,6 +76,7 @@ func (ss *LoadConversationDetailService) Execute(ctx context.Context, req *model
 		resp.Data.HasMore = false
 		resp.Data.NewCursor = "0"
 	}
+
 	return resp, nil
 }
 

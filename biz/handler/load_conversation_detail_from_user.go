@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin/binding"
 )
 
-// LoadConversationDetailFromUser [Post] /im/load_conversation_detail
+// LoadConversationDetailFromUser [Post] /im/load_conversation_detail_from_user
 func LoadConversationDetailFromUser(c *gin.Context) {
 	// 加载会话详情
 	req := &model.LoadConversationDetailRequest{}

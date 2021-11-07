@@ -17,6 +17,7 @@ func SendMessage(c *gin.Context) {
 		c.JSON(400, err.Error())
 		return
 	}
+	req.Timestamp /= 1000
 	var ss service.SendMessageService
 	resp, err := ss.Execute(c, req)
 	if err != nil {

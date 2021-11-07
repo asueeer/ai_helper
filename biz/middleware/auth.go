@@ -40,7 +40,7 @@ func Auth(jwtClient *JwtClient, noAuth map[string]bool) gin.HandlerFunc {
 			c.Set(
 				common.UserProfile,
 				&val_obj.UserClaims{
-					UserID:   305088049,
+					UserID:   435737,
 					Nickname: "admin",
 					HeadURL:  "https://images.gitee.com/uploads/images/2021/0731/134131_a864d20c_7809561.jpeg",
 				},

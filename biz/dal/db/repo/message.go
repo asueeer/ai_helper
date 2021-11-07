@@ -4,6 +4,7 @@ import (
 	"ai_helper/biz/dal/db"
 	"ai_helper/biz/dal/db/po"
 	"context"
+	"log"
 	"time"
 
 	"github.com/pkg/errors"
@@ -71,6 +72,10 @@ func (repo *MessageRepo) GetMessageFroms(ctx context.Context, req GetMessageFrom
 	if err != nil {
 		return nil, errors.Wrap(err, "sql.Find(msgFroms) fail")
 	}
+	for i := range msgFroms {
+		log.Printf("msgFroms[%d]: %+v", i, msgFroms[i])
+	}
+
 	return msgFroms, err
 }
 

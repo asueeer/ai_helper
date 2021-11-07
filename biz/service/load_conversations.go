@@ -23,7 +23,7 @@ func (ss *LoadConversationsService) Execute(ctx context.Context, req *model.Load
 	convEntities, total, err := convsLoader.LoadConversations(ctx, domainService.LoadConversationsRequest{
 		UserID:        user.UserID,
 		Limit:         req.Limit,
-		TimestampFrom: cast.ToInt64(req.Cursor),
+		TimestampFrom: cast.ToInt64(req.Cursor) / 1000,
 	})
 	if err != nil {
 		return nil, common.NewBizErr(common.BizErrCode, err.Error(), err)
@@ -60,7 +60,7 @@ func (ss *LoadConversationsService) ToConvVos(ctx context.Context, entities []*e
 			ConvID:    cast.ToString(entities[i].ConvID),
 			Type:      entities[i].Type,
 			UnRead:    0,
-			Timestamp: entities[i].Timestamp.Unix(),
+			Timestamp: entities[i].Timestamp.Unix() * 1000,
 		}
 
 		// 加载会话成员信息
@@ -73,17 +73,7 @@ func (ss *LoadConversationsService) ToConvVos(ctx context.Context, entities []*e
 		}
 
 		if entities[i].LastMsg != nil {
-			vos[i].LastMsg = &vo.Message{
-				MessageID:  cast.ToString(entities[i].LastMsg.MessageID),
-				SenderID:   cast.ToString(entities[i].LastMsg.SenderID),
-				ReceiverID: cast.ToString(entities[i].LastMsg.ReceiverID),
-				Content: vo.MsgContent{
-					Text: entities[i].LastMsg.Content.Text,
-				},
-				Type:      entities[i].LastMsg.Type,
-				Status:    entities[i].LastMsg.Status,
-				Timestamp: cast.ToInt64(entities[i].LastMsg.Timestamp),
-			}
+			vos[i].LastMsg = entities[i].LastMsg.ToVo()
 		}
 	}
 	return vos

@@ -1,11 +1,13 @@
 package entity
 
 import (
+	"ai_helper/biz/common"
 	"ai_helper/biz/dal/db/po"
 	"ai_helper/biz/dal/db/repo"
 	"ai_helper/biz/model/vo"
 	"context"
 	"encoding/json"
+	"github.com/spf13/cast"
 	"time"
 )
 
@@ -33,15 +35,15 @@ func (content *MsgContent) ToVo() vo.MsgContent {
 }
 
 type MessageFrom struct {
-	ID         int64      `json:"id"`          // 自增id, 无业务意义
-	MessageID  int64      `json:"message_id"`  // 消息id
-	ConvID     int64      `json:"conv_id"`     // 会话id
-	SenderID   int64      `json:"sender_id"`   // 发送方id
-	ReceiverID int64      `json:"receiver_id"` // 接收方id
-	Status     string     `json:"status"`      // 消息状态
-	Content    MsgContent `json:"content"`     // 消息内容
-	Type       string     `json:"type"`        // 消息类型
-	Timestamp  time.Time  `json:"timestamp"`   // 消息时间戳
+	ID         int64      `json:"id"`                    // 自增id, 无业务意义
+	MessageID  int64      `json:"message_id"`            // 消息id
+	ConvID     int64      `json:"conv_id"`               // 会话id
+	SenderID   int64      `json:"sender_id"`             // 发送方id
+	ReceiverID int64      `json:"receiver_id,omitempty"` // 接收方id
+	Status     string     `json:"status,omitempty"`      // 消息状态
+	Content    MsgContent `json:"content"`               // 消息内容
+	Type       string     `json:"type"`                  // 消息类型
+	Timestamp  time.Time  `json:"timestamp"`             // 消息时间戳
 }
 
 func (f *MessageFrom) Persist(ctx context.Context) error {
@@ -90,6 +92,26 @@ func (f *MessageFrom) ToPo() (*po.MessageFrom, error) {
 		ConvID:     f.ConvID,
 		Timestamp:  f.Timestamp,
 	}, nil
+}
+
+func (f *MessageFrom) ToVo() *vo.Message {
+	msgVo := &vo.Message{
+		MessageID:  cast.ToString(f.MessageID),
+		SenderID:   cast.ToString(f.SenderID),
+		ReceiverID: cast.ToString(f.ReceiverID),
+		Content: vo.MsgContent{
+			Text: f.Content.Text,
+		},
+		Type:      f.Type,
+		Status:    f.Status,
+		Timestamp: f.Timestamp.Unix() * 1000,
+	}
+	if msgVo.SenderID == cast.ToString(common.HelperID) {
+		msgVo.Role = common.ConvRoleHelper
+	} else {
+		msgVo.Role = common.ConvRoleVisitor
+	}
+	return msgVo
 }
 
 type MessageTo struct {

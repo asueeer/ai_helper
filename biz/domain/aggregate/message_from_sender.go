@@ -8,7 +8,7 @@ import (
 	"log"
 )
 
-// 发送者角度的消息
+// MessageAggregate 发送者角度的消息
 type MessageAggregate struct {
 	MessageID   int64                `json:"id"`
 	MessageFrom *entity.MessageFrom  `json:"message_from"`
@@ -71,14 +71,21 @@ func (agg *MessageAggregate) ConstructHelperMsgTos(ctx context.Context) []*entit
 		ConvID:    msgFrom.ConvID,
 		OwnerID:   conv.Creator,
 		Timestamp: msgFrom.Timestamp,
-		HasRead:   entity.MsgHasRead,
 	}
 	agg.MessageTos[1] = &entity.MessageTo{
 		MessageID: msgFrom.MessageID,
 		ConvID:    msgFrom.ConvID,
 		OwnerID:   common.HelperID,
 		Timestamp: msgFrom.Timestamp,
-		HasRead:   entity.MsgHasNotRead,
+	}
+	if msgFrom.SenderID == common.HelperID {
+		// 客服发的消息
+		agg.MessageTos[0].HasRead = entity.MsgHasNotRead // 游客未读
+		agg.MessageTos[1].HasRead = entity.MsgHasRead    // 客服已读
+	} else {
+		// 游客发的消息
+		agg.MessageTos[0].HasRead = entity.MsgHasRead    // 游客已读
+		agg.MessageTos[1].HasRead = entity.MsgHasNotRead // 客服未读
 	}
 	return agg.MessageTos
 }

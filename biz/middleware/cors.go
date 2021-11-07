@@ -25,10 +25,10 @@ func Cors() gin.HandlerFunc {
 			c.Header("Access-Control-Allow-Credentials", "true")
 		}
 
-		//允许类型校验
-		if method == "OPTIONS" {
-			c.JSON(http.StatusOK, "ok!")
-		}
+		////允许类型校验
+		//if method == "OPTIONS" {
+		//	c.JSON(http.StatusOK, "ok!")
+		//}
 
 		if method == "OPTIONS" {
 			c.Header("Access-Control-Allow-Origin", "*")

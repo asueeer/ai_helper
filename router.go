@@ -29,5 +29,6 @@ func register(r *gin.Engine) {
 	r.POST("/api/im/create_conversation", handler.CreateConversation)
 	r.POST("/api/im/send_message", handler.SendMessage, handler.SendMessageCallBack)
 	r.POST("/api/im/load_conversation_detail", handler.LoadConversationDetail)
+	r.POST("/api/im/load_conversation_detail_from_user", handler.LoadConversationDetailFromUser)
 	r.POST("/api/im/load_conversations", handler.LoadConversations)
 }

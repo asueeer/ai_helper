@@ -7,7 +7,6 @@ import (
 	"ai_helper/biz/model/vo"
 	"ai_helper/biz/util"
 	"context"
-	"fmt"
 	"math"
 	"time"
 
@@ -43,7 +42,6 @@ func (ss *LoadConversationDetailService) Execute(ctx context.Context, req *model
 	timestampTo := cast.ToTime(cast.ToInt64(req.Cursor))
 
 	viewerID, err := ss.GetViewerID(ctx, req)
-	fmt.Println(viewerID)
 	if err != nil {
 		return nil, common.NewBizErr(common.EvilViewErrCode, "ops, 会话找不到了...", err)
 	}
@@ -93,9 +91,9 @@ func (ss *LoadConversationDetailService) ConstructMsgVos(ctx context.Context, re
 			Content:    msgFrom.Content.ToVo(),
 			Type:       msgFrom.Type,
 			Status:     msgFrom.Status,
-			Timestamp:  msgFrom.Timestamp.Unix(),
+			Timestamp:  msgFrom.Timestamp.UnixMicro(),
 		}
-		newCursor = util.MinInt64(newCursor, msgFrom.Timestamp.Unix())
+		newCursor = util.MinInt64(newCursor, msgFrom.Timestamp.UnixMicro())
 	}
 
 	return vos, newCursor, nil

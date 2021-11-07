@@ -109,7 +109,7 @@ func (ss *ConversationsLoader) LoadLastMsgs(ctx context.Context, entities []*ent
 func (ss *ConversationsLoader) Cursor(ctx context.Context, entities []*entity.Conversation) (cursor int64) {
 	cursor = -1
 	for i := range entities {
-		cursor = util.MaxInt64(entities[i].Timestamp.Unix(), cursor)
+		cursor = util.MaxInt64(entities[i].Timestamp.UnixMicro(), cursor)
 	}
 	return cursor
 }

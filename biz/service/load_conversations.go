@@ -60,7 +60,7 @@ func (ss *LoadConversationsService) ToConvVos(ctx context.Context, entities []*e
 			ConvID:    cast.ToString(entities[i].ConvID),
 			Type:      entities[i].Type,
 			UnRead:    0,
-			Timestamp: entities[i].Timestamp.UnixMicro(),
+			Timestamp: entities[i].Timestamp.Unix(),
 		}
 
 		// 加载会话成员信息

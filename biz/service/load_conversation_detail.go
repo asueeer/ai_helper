@@ -91,9 +91,9 @@ func (ss *LoadConversationDetailService) ConstructMsgVos(ctx context.Context, re
 			Content:    msgFrom.Content.ToVo(),
 			Type:       msgFrom.Type,
 			Status:     msgFrom.Status,
-			Timestamp:  msgFrom.Timestamp.UnixMicro(),
+			Timestamp:  msgFrom.Timestamp.Unix(),
 		}
-		newCursor = util.MinInt64(newCursor, msgFrom.Timestamp.UnixMicro())
+		newCursor = util.MinInt64(newCursor, msgFrom.Timestamp.Unix())
 	}
 
 	return vos, newCursor, nil

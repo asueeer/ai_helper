@@ -56,8 +56,6 @@ func (ss *LoadConversationDetailService) Execute(ctx context.Context, req *model
 	}
 	msgVos, newCursor, err := ss.ConstructMsgVos(ctx, convResp)
 
-	newCursor *= 1000
-
 	if err != nil {
 		return nil, err
 	}

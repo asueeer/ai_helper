@@ -58,6 +58,9 @@ func Auth(jwtClient *JwtClient, noAuth map[string]bool) gin.HandlerFunc {
 
 func isLoginAndDo(c *gin.Context, client *JwtClient, do func(token *jwt.Token, claims *val_obj.UserClaims)) bool {
 	tokenString := c.GetHeader(common.AuthTokenName)
+	if tokenString == "" {
+		tokenString, _ = c.GetQuery(common.AuthTokenName)
+	}
 	token, claims, err := client.ParseToken(tokenString)
 	if err != nil {
 		log.Printf("ParseToken fail, err: %+v", err)

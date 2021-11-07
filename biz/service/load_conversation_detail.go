@@ -7,6 +7,7 @@ import (
 	"ai_helper/biz/model/vo"
 	"ai_helper/biz/util"
 	"context"
+	"fmt"
 	"math"
 	"time"
 
@@ -42,6 +43,7 @@ func (ss *LoadConversationDetailService) Execute(ctx context.Context, req *model
 	timestampTo := cast.ToTime(cast.ToInt64(req.Cursor))
 
 	viewerID, err := ss.GetViewerID(ctx, req)
+	fmt.Println(viewerID)
 	if err != nil {
 		return nil, common.NewBizErr(common.EvilViewErrCode, "ops, 会话找不到了...", err)
 	}

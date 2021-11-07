@@ -2,8 +2,9 @@ package model
 
 type (
 	RegisterVisitorRequest struct {
-		UserID     string `form:"user_id" json:"user_id"`
-		VerifyCode string `form:"user_id" json:"verify_code"`
+		UserID      string `form:"user_id" json:"user_id"`
+		FingerPrint string `form:"finger_print" json:"finger_print"`
+		VerifyCode  string `form:"user_id" json:"verify_code"`
 	}
 
 	RegisterVisitorData struct {

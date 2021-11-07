@@ -1,9 +1,9 @@
 package repo
 
 import (
+	"ai_helper/biz/dal/db"
+	"ai_helper/biz/dal/db/po"
 	"context"
-	"nearby/biz/dal/db"
-	"nearby/biz/dal/db/po"
 	"time"
 
 	"github.com/pkg/errors"

@@ -1,10 +1,10 @@
 package handler
 
 import (
+	"ai_helper/biz/common"
+	"ai_helper/biz/model"
+	"ai_helper/biz/service"
 	"github.com/gin-gonic/gin"
-	"nearby/biz/common"
-	"nearby/biz/model"
-	"nearby/biz/service"
 )
 
 // CreateConversation [Post] /im/create_conversation

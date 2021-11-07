@@ -1,10 +1,10 @@
 package service
 
 import (
+	"ai_helper/biz/common"
+	"ai_helper/biz/model"
 	"context"
 	"github.com/spf13/cast"
-	"nearby/biz/common"
-	"nearby/biz/model"
 )
 
 type ProfileMeService struct {

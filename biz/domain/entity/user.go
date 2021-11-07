@@ -1,11 +1,11 @@
 package entity
 
 import (
+	"ai_helper/biz/dal/db/po"
+	"ai_helper/biz/domain/val_obj"
+	"ai_helper/biz/middleware"
+	"ai_helper/biz/model/vo"
 	"github.com/spf13/cast"
-	"nearby/biz/dal/db/po"
-	"nearby/biz/domain/val_obj"
-	"nearby/biz/middleware"
-	"nearby/biz/model/vo"
 	"time"
 
 	"github.com/golang-jwt/jwt"

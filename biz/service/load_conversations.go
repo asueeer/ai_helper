@@ -1,13 +1,13 @@
 package service
 
 import (
+	"ai_helper/biz/common"
+	"ai_helper/biz/domain/entity"
+	domainService "ai_helper/biz/domain/service"
+	"ai_helper/biz/model"
+	"ai_helper/biz/model/vo"
 	"context"
 	"github.com/spf13/cast"
-	"nearby/biz/common"
-	"nearby/biz/domain/entity"
-	domainService "nearby/biz/domain/service"
-	"nearby/biz/model"
-	"nearby/biz/model/vo"
 )
 
 type LoadConversationsService struct {
@@ -29,28 +29,61 @@ func (ss *LoadConversationsService) Execute(ctx context.Context, req *model.Load
 		return nil, common.NewBizErr(common.BizErrCode, err.Error(), err)
 	}
 	// 加载最新一条会话
-	return &model.LoadConversationsResponse{
+	err = convsLoader.LoadLastMsgs(ctx, convEntities)
+	if err != nil {
+		return nil, common.NewBizErr(common.BizErrCode, "装载会话里的消息时出错", err)
+	}
+
+	// 更新接下来拉取会话时，需要给后端传的cursor
+	cursor := convsLoader.Cursor(ctx, convEntities)
+	resp := &model.LoadConversationsResponse{
 		Meta: common.MetaOk,
 		Data: model.LoadConversationData{
 			Conversations: ss.ToConvVos(ctx, convEntities),
-			NewCursor:     "0",
-			HasMore:       false,
+			NewCursor:     cast.ToString(cursor),
+			HasMore:       true,
 			Total:         total,
 		},
-	}, nil
+	}
+
+	if len(convEntities) < cast.ToInt(req.Limit) || cast.ToString(cursor) == req.Cursor {
+		resp.Data.HasMore = false
+		resp.Data.NewCursor = "0"
+	}
+	return resp, nil
 }
 
 func (ss *LoadConversationsService) ToConvVos(ctx context.Context, entities []*entity.Conversation) []*vo.Conversation {
 	vos := make([]*vo.Conversation, len(entities))
 	for i := range vos {
 		vos[i] = &vo.Conversation{
-			ConvID:       cast.ToString(entities[i].ConvID),
-			Type:         entities[i].Type,
-			UnRead:       0,
-			LastMsg:      vo.Message{},
-			Participants: nil,
-			ConvIcon:     "",
-			Timestamp:    entities[i].Timestamp.Unix(),
+			ConvID:    cast.ToString(entities[i].ConvID),
+			Type:      entities[i].Type,
+			UnRead:    0,
+			Timestamp: entities[i].Timestamp.Unix(),
+		}
+
+		// 加载会话成员信息
+		vos[i].Participants = make([]vo.Participant, len(entities[i].Participants))
+		for j := range vos[i].Participants {
+			vos[i].Participants[j] = vo.Participant{
+				UserID:  cast.ToString(entities[i].Participants[j]),
+				HeadURL: "",
+			}
+		}
+
+		if entities[i].LastMsg != nil {
+			vos[i].LastMsg = &vo.Message{
+				MessageID:  cast.ToString(entities[i].LastMsg.MessageID),
+				SenderID:   cast.ToString(entities[i].LastMsg.SenderID),
+				ReceiverID: cast.ToString(entities[i].LastMsg.ReceiverID),
+				Content: vo.MsgContent{
+					Text: entities[i].LastMsg.Content.Text,
+				},
+				Type:      entities[i].LastMsg.Type,
+				Status:    entities[i].LastMsg.Status,
+				Timestamp: cast.ToInt64(entities[i].LastMsg.Timestamp),
+			}
 		}
 	}
 	return vos

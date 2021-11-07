@@ -1,6 +1,6 @@
 package model
 
-import "nearby/biz/model/vo"
+import "ai_helper/biz/model/vo"
 
 type SendMessageRequest struct {
 	ReceiverID string `form:"receiver_id" json:"receiver_id"` // 接收方id, 可不传;
@@ -26,7 +26,7 @@ type SendMessageRequest struct {
 	*/
 	Type      string `form:"type" json:"type"`           // 消息类型
 	Status    string `form:"status" json:"status"`       // 消息状态
-	Timestamp int64  `form:"timestamp" json:"timestamp"` // 消息时间戳
+	Timestamp int64  `form:"timestamp" json:"timestamp"` // 消息时间戳, 精确到微妙
 }
 
 type SendMessageData struct {

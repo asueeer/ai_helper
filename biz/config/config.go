@@ -1,9 +1,9 @@
 package config
 
 import (
+	"ai_helper/biz/dal/db/repo"
 	"context"
 	"log"
-	"nearby/biz/dal/db/repo"
 )
 
 var (

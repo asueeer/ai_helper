@@ -1,11 +1,11 @@
 package middleware
 
 import (
+	"ai_helper/biz/common"
+	"ai_helper/biz/config"
+	"ai_helper/biz/domain/val_obj"
+	"ai_helper/biz/model"
 	"log"
-	"nearby/biz/common"
-	"nearby/biz/config"
-	"nearby/biz/domain/val_obj"
-	"nearby/biz/model"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"

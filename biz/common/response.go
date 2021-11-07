@@ -1,7 +1,7 @@
 package common
 
 import (
-	"nearby/biz/model"
+	"ai_helper/biz/model"
 
 	"github.com/gin-gonic/gin"
 )

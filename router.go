@@ -1,8 +1,8 @@
 package main
 
 import (
-	"nearby/biz/handler"
-	"nearby/biz/middleware"
+	"ai_helper/biz/handler"
+	"ai_helper/biz/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -27,7 +27,7 @@ func register(r *gin.Engine) {
 
 	// 会话&消息
 	r.POST("/api/im/create_conversation", handler.CreateConversation)
-	r.POST("/api/im/send_message", handler.SendMessage)
+	r.POST("/api/im/send_message", handler.SendMessage, handler.SendMessageCallBack)
 	r.POST("/api/im/load_conversation_detail", handler.LoadConversationDetail)
 	r.POST("/api/im/load_conversations", handler.LoadConversations)
 }

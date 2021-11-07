@@ -4,9 +4,9 @@ import (
 	"context"
 	"time"
 
-	"nearby/biz/common"
-	"nearby/biz/dal/db/po"
-	"nearby/biz/dal/db/repo"
+	"ai_helper/biz/common"
+	"ai_helper/biz/dal/db/po"
+	"ai_helper/biz/dal/db/repo"
 )
 
 type Participant struct {
@@ -16,14 +16,15 @@ type Participant struct {
 }
 
 type Conversation struct {
-	ID           int64          `json:"id"`           // 主键自增id,无业务意义
-	ConvID       int64          `json:"conv_id"`      // 会话id, 会话的唯一标识
-	Type         string         `json:"type"`         // 会话类型
-	Creator      int64          `json:"creator"`      // 创建者id
-	Status       string         `json:"status"`       // 状态
-	LastMsg      *MessageTo     `json:"last_msg"`     // 最新的一条消息
-	Participants []*Participant `json:"participants"` // 会话参与者
-	Timestamp    time.Time      `json:"timestamp"`    // 会话时间戳
+	ID           int64        `json:"id"`           // 主键自增id,无业务意义
+	ConvID       int64        `json:"conv_id"`      // 会话id, 会话的唯一标识
+	Type         string       `json:"type"`         // 会话类型
+	Creator      int64        `json:"creator"`      // 创建者id
+	Status       string       `json:"status"`       // 状态
+	LastMsgID    int64        `json:"last_msg_id"`  // 最近一条消息的msg_id
+	LastMsg      *MessageFrom `json:"last_msg"`     // 最新的一条消息
+	Participants []int64      `json:"participants"` // 会话参与者
+	Timestamp    time.Time    `json:"timestamp"`    // 会话时间戳
 }
 
 func (c *Conversation) ToPo() po.Conversation {
@@ -51,11 +52,14 @@ func NewConversationEntityByID(ctx context.Context, convID int64) (*Conversation
 	if err != nil {
 		return nil, err
 	}
-	return ConstructConversationEntityByPo(ctx, convPo), err
+	return NewConversationEntityByPo(ctx, convPo), err
 }
 
-// ConstructConversationEntityByPo 或者写一个叫ToConversationEntity的函数, 入参是个interface
-func ConstructConversationEntityByPo(ctx context.Context, convPo *po.Conversation) *Conversation {
+// NewConversationEntityByPo 根据po构造entity
+func NewConversationEntityByPo(ctx context.Context, convPo *po.Conversation) *Conversation {
+	if convPo == nil {
+		return &Conversation{}
+	}
 	return &Conversation{
 		ID:        convPo.ID,
 		ConvID:    convPo.ConvID,
@@ -63,6 +67,7 @@ func ConstructConversationEntityByPo(ctx context.Context, convPo *po.Conversatio
 		Creator:   convPo.Creator,
 		Status:    convPo.Status,
 		Timestamp: convPo.Timestamp,
+		LastMsgID: convPo.LastMsgID,
 	}
 }
 

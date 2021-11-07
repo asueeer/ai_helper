@@ -1,6 +1,6 @@
 package aggregate
 
-import "nearby/biz/domain/entity"
+import "ai_helper/biz/domain/entity"
 
 // 接收者角度的消息
 type MessageFromReceiver struct {

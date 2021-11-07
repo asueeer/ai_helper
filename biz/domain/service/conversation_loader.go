@@ -1,18 +1,18 @@
 package service
 
 import (
+	"ai_helper/biz/dal/db/po"
+	"ai_helper/biz/domain/aggregate"
 	"context"
 	"fmt"
 	"log"
-	"nearby/biz/dal/db/po"
-	"nearby/biz/domain/aggregate"
 	"time"
 
 	"github.com/spf13/cast"
 
 	"github.com/pkg/errors"
 
-	"nearby/biz/domain/entity"
+	"ai_helper/biz/domain/entity"
 )
 
 type ConversationLoadService struct {

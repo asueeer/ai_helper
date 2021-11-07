@@ -1,12 +1,11 @@
 package entity
 
 import (
+	"ai_helper/biz/dal/db/po"
+	"ai_helper/biz/dal/db/repo"
+	"ai_helper/biz/model/vo"
 	"context"
 	"encoding/json"
-	"log"
-	"nearby/biz/dal/db/po"
-	"nearby/biz/dal/db/repo"
-	"nearby/biz/model/vo"
 	"time"
 )
 
@@ -46,7 +45,6 @@ type MessageFrom struct {
 }
 
 func (f *MessageFrom) Persist(ctx context.Context) error {
-	log.Printf("MessageFrom: %+v", f)
 	msgRepo := repo.NewMessageRepo()
 	msgPo, err := f.ToPo()
 	if err != nil {

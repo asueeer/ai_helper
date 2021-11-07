@@ -1,14 +1,14 @@
 package service
 
 import (
+	"ai_helper/biz/common"
+	"ai_helper/biz/config"
+	"ai_helper/biz/dal/db/po"
+	"ai_helper/biz/dal/db/repo"
+	"ai_helper/biz/domain/entity"
+	"ai_helper/biz/domain/val_obj"
 	"context"
 	"log"
-	"nearby/biz/common"
-	"nearby/biz/config"
-	"nearby/biz/dal/db/po"
-	"nearby/biz/dal/db/repo"
-	"nearby/biz/domain/entity"
-	"nearby/biz/domain/val_obj"
 	"time"
 
 	"github.com/pkg/errors"
@@ -58,16 +58,18 @@ type ConstructConversationEntityRequest struct {
 func (ss *ConversationService) ConstructUserConvRel(ctx context.Context, convEntity entity.Conversation) []*po.UserConvRel {
 	pos := make([]*po.UserConvRel, 0)
 	pos = append(pos, &po.UserConvRel{
-		RelID:  config.GenerateIDInt64(),
-		ConvID: convEntity.ConvID,
-		UserID: convEntity.Creator,
-		Role:   common.ConvRoleCreator,
+		RelID:        config.GenerateIDInt64(),
+		ConvID:       convEntity.ConvID,
+		UserID:       convEntity.Creator,
+		Role:         common.ConvRoleCreator,
+		Participants: []int64{convEntity.Creator, common.HelperID},
 	})
 	pos = append(pos, &po.UserConvRel{
-		RelID:  config.GenerateIDInt64(),
-		ConvID: convEntity.ConvID,
-		UserID: common.HelperID,
-		Role:   common.ConvRoleHelper,
+		RelID:        config.GenerateIDInt64(),
+		ConvID:       convEntity.ConvID,
+		UserID:       common.HelperID,
+		Role:         common.ConvRoleHelper,
+		Participants: []int64{convEntity.Creator, common.HelperID},
 	})
 	return pos
 }

@@ -1,9 +1,9 @@
 package middleware
 
 import (
-	"nearby/biz/config"
+	"ai_helper/biz/config"
 
-	"nearby/biz/domain/val_obj"
+	"ai_helper/biz/domain/val_obj"
 
 	"github.com/golang-jwt/jwt"
 )

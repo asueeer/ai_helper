@@ -1,13 +1,13 @@
 package service
 
 import (
+	"ai_helper/biz/common"
+	domainService "ai_helper/biz/domain/service"
+	"ai_helper/biz/model"
+	"ai_helper/biz/model/vo"
+	"ai_helper/biz/util"
 	"context"
 	"math"
-	"nearby/biz/common"
-	domainService "nearby/biz/domain/service"
-	"nearby/biz/model"
-	"nearby/biz/model/vo"
-	"nearby/biz/util"
 	"time"
 
 	"github.com/spf13/cast"
@@ -65,13 +65,12 @@ func (ss *LoadConversationDetailService) Execute(ctx context.Context, req *model
 			NewCursor: cast.ToString(newCursor),
 		},
 	}
-	if len(resp.Data.Messages) == cast.ToInt(req.Limit) {
-		resp.Data.HasMore = true
+	if len(resp.Data.Messages) < cast.ToInt(req.Limit) {
+		resp.Data.HasMore = false
+		resp.Data.NewCursor = "0"
 	}
 	if resp.Data.NewCursor == req.Cursor {
 		resp.Data.HasMore = false
-	}
-	if !resp.Data.HasMore {
 		resp.Data.NewCursor = "0"
 	}
 	return resp, nil
@@ -94,7 +93,7 @@ func (ss *LoadConversationDetailService) ConstructMsgVos(ctx context.Context, re
 			Status:     msgFrom.Status,
 			Timestamp:  msgFrom.Timestamp.Unix(),
 		}
-		newCursor = util.Min64(newCursor, msgFrom.Timestamp.Unix())
+		newCursor = util.MinInt64(newCursor, msgFrom.Timestamp.Unix())
 	}
 
 	return vos, newCursor, nil

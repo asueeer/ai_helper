@@ -1,10 +1,10 @@
 package repo
 
 import (
+	"ai_helper/biz/dal/db"
+	"ai_helper/biz/dal/db/po"
 	"context"
 	"github.com/jinzhu/gorm"
-	"nearby/biz/dal/db"
-	"nearby/biz/dal/db/po"
 )
 
 type UserRepo struct {

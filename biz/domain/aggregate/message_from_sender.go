@@ -1,11 +1,11 @@
 package aggregate
 
 import (
+	"ai_helper/biz/common"
+	"ai_helper/biz/dal/db/repo"
+	"ai_helper/biz/domain/entity"
 	"context"
 	"log"
-	"nearby/biz/common"
-	"nearby/biz/dal/db/repo"
-	"nearby/biz/domain/entity"
 )
 
 // 发送者角度的消息

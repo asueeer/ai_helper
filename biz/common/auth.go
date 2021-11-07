@@ -1,9 +1,9 @@
 package common
 
 import (
+	"ai_helper/biz/domain/val_obj"
 	"context"
 	"log"
-	"nearby/biz/domain/val_obj"
 )
 
 func GetUser(ctx context.Context) *val_obj.UserClaims {

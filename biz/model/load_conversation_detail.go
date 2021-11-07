@@ -1,6 +1,6 @@
 package model
 
-import "nearby/biz/model/vo"
+import "ai_helper/biz/model/vo"
 
 type LoadConversationDetailRequest struct {
 	ConvID string `form:"conv_id" json:"conv_id" binding:"required"` // 会话id

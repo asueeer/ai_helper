@@ -25,7 +25,7 @@ func (MessageFrom) TableName() string {
 	return "message_from"
 }
 
-// 消息收件箱，存储收件者角度的信息，如已读/未读等。
+// MessageTo 消息收件箱，存储收件者角度的信息，如已读/未读等。
 type MessageTo struct {
 	ID        int64     `gorm:"column:id"`         // 主键自增id,无业务意义
 	MessageID int64     `gorm:"column:message_id"` // 消息id

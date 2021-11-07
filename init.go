@@ -1,8 +1,8 @@
 package main
 
 import (
-	"nearby/biz/config"
-	"nearby/biz/dal/db"
+	"ai_helper/biz/config"
+	"ai_helper/biz/dal/db"
 )
 
 func Init() {

@@ -1,6 +1,6 @@
 package model
 
-import "nearby/biz/model/vo"
+import "ai_helper/biz/model/vo"
 
 type LoadConversationsRequest struct {
 	Limit  int64  `form:"limit" json:"limit"`

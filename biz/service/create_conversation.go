@@ -1,12 +1,12 @@
 package service
 
 import (
+	"ai_helper/biz/common"
+	domainService "ai_helper/biz/domain/service"
+	"ai_helper/biz/model"
 	"context"
 	"github.com/spf13/cast"
 	"log"
-	"nearby/biz/common"
-	domainService "nearby/biz/domain/service"
-	"nearby/biz/model"
 )
 
 type CreateConversationService struct {

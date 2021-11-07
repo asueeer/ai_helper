@@ -1,14 +1,12 @@
 package service
 
 import (
+	"ai_helper/biz/common"
+	"ai_helper/biz/config"
+	"ai_helper/biz/domain/aggregate"
+	"ai_helper/biz/domain/entity"
 	"context"
 	"encoding/json"
-	"log"
-	"nearby/biz/common"
-	"nearby/biz/config"
-	"nearby/biz/domain/aggregate"
-	"nearby/biz/domain/entity"
-
 	"github.com/spf13/cast"
 )
 
@@ -29,7 +27,6 @@ type SendMessageRequest struct {
 func (ss *MessageService) SendMessage(ctx context.Context, req SendMessageRequest) (*entity.MessageFrom, error) {
 	// 构造出一个聚合根, 并将该聚合根持久化, 同时更新相关会话的时间戳
 	msgAgg, err := ss.ConstructMessageAggregate(ctx, req)
-	log.Printf("msgAgg: %+v", msgAgg)
 	if err != nil {
 		return nil, err
 	}

@@ -1,7 +1,7 @@
 .PHONY: build run
 
 build:
-	go build nearby
+	go build ai_helper
 
 run:
-	go build nearby && ./nearby
+	go build ai_helper && ./ai_helper

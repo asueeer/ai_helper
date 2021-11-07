@@ -3,8 +3,8 @@ package aggregate
 import (
 	"context"
 
-	"nearby/biz/dal/db/repo"
-	"nearby/biz/domain/entity"
+	"ai_helper/biz/dal/db/repo"
+	"ai_helper/biz/domain/entity"
 
 	"github.com/jinzhu/gorm"
 )

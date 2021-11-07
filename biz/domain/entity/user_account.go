@@ -1,6 +1,6 @@
 package entity
 
-import "nearby/biz/dal/db/po"
+import "ai_helper/biz/dal/db/po"
 
 type UserAccount struct {
 	ID          int64  `json:"id"`           // 主键自增id,无业务意义

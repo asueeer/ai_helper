@@ -1,9 +1,11 @@
 package repo
 
 import (
+	"ai_helper/biz/dal/db"
+	"ai_helper/biz/dal/db/po"
 	"context"
-	"nearby/biz/dal/db"
-	"nearby/biz/dal/db/po"
+	"github.com/pkg/errors"
+	"time"
 
 	"github.com/jinzhu/gorm"
 )
@@ -79,4 +81,35 @@ func (repo *ConversationRepo) GetUserConvRelPos(ctx context.Context, req GetUser
 		return nil, 0, err
 	}
 	return pos, total, nil
+}
+
+type GetConvPosRequest struct {
+	ConvIDs []int64 `json:"conv_ids"`
+}
+
+func (repo *ConversationRepo) GetConvPos(ctx context.Context, req GetConvPosRequest) ([]*po.Conversation, error) {
+	sql := repo.db.Model(po.Conversation{})
+	pos := make([]*po.Conversation, 0)
+	if len(req.ConvIDs) != 0 {
+		sql = sql.Where("conv_id in (?)", req.ConvIDs)
+	} else {
+		return nil, errors.New("len(req.ConvIDs) == 0")
+	}
+	err := sql.Find(&pos).Error
+	if err != nil {
+		return nil, err
+	}
+	return pos, nil
+}
+
+func (repo *ConversationRepo) UpdateLastMsgID(ctx context.Context, convID int64, msgID int64) error {
+	sql := repo.db.Model(po.Conversation{})
+	sql = sql.Where("conv_id = ?", convID).UpdateColumn("last_msg_id", msgID)
+	return sql.Error
+}
+
+func (repo *ConversationRepo) UpdateTimestamp(ctx context.Context, convID int64, timestamp time.Time) error {
+	sql := repo.db.Model(po.Conversation{})
+	sql = sql.Where("conv_id = ?", convID).UpdateColumn("timestamp", timestamp)
+	return sql.Error
 }

@@ -2,17 +2,18 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 
-	"nearby/biz/common"
-	"nearby/biz/model"
-	"nearby/biz/service"
+	"ai_helper/biz/common"
+	"ai_helper/biz/model"
+	"ai_helper/biz/service"
 )
 
-// SendMessage [Post] /im/send_message
+// SendMessage [Post] /api/im/send_message
 func SendMessage(c *gin.Context) {
 	// 发送消息
 	req := &model.SendMessageRequest{}
-	if err := c.ShouldBind(req); err != nil {
+	if err := c.ShouldBindBodyWith(req, binding.JSON); err != nil {
 		c.JSON(400, err.Error())
 		return
 	}
@@ -22,5 +23,6 @@ func SendMessage(c *gin.Context) {
 		common.WriteError(c, err)
 		return
 	}
+
 	c.JSON(200, resp)
 }

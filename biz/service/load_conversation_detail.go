@@ -106,7 +106,7 @@ func (ss *LoadConversationDetailService) ConstructMsgVos(ctx context.Context, re
 func (ss *LoadConversationDetailService) Reverse(vos []*vo.Message) []*vo.Message {
 	ret := make([]*vo.Message, len(vos))
 	for i := 0; i < len(vos); i++ {
-		ret[i] = vos[len(vos)-i-i]
+		ret[i] = vos[len(vos)-i-1]
 	}
 	return ret
 }

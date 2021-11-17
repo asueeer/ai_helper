@@ -3,8 +3,9 @@ package model
 import "ai_helper/biz/model/vo"
 
 type LoadConversationsRequest struct {
-	Limit  int64  `form:"limit" json:"limit"`
-	Cursor string `form:"cursor" json:"cursor"` // 相当于是offset
+	Limit     int64  `form:"limit" json:"limit"`
+	Cursor    string `form:"cursor" json:"cursor"`       // 相当于是offset
+	Direction int32  `form:"direction" json:"direction"` // 拉取的方向; -1是由现在到过去; +1是由现在到未来
 }
 
 type LoadConversationData struct {

@@ -1,29 +1,27 @@
 package service
 
 import (
+	"ai_helper/biz/common"
 	"ai_helper/biz/dal/db/po"
+	"ai_helper/biz/dal/db/repo"
 	"ai_helper/biz/domain/aggregate"
 	"context"
 	"fmt"
-	"log"
-	"time"
-
-	"github.com/spf13/cast"
-
 	"github.com/pkg/errors"
+	"github.com/spf13/cast"
 
 	"ai_helper/biz/domain/entity"
 )
 
-type ConversationLoadService struct {
+type ConversationLoader struct {
 }
 
 type GetConversationRequest struct {
-	ConvID        int64
-	Limit         int64
-	ViewerID      int64
-	TimestampFrom *time.Time
-	TimestampTo   *time.Time
+	ConvID    int64
+	Limit     int64
+	ViewerID  int64
+	SeqIDFrom int64
+	SeqIDTo   int64
 }
 
 type GetConversationResponse struct {
@@ -31,19 +29,22 @@ type GetConversationResponse struct {
 	MsgAggs []*aggregate.MessageFromReceiver // 接收者角度的消息聚合根列表
 }
 
-func (ss *ConversationLoadService) GetConversation(ctx context.Context, req GetConversationRequest) (resp *GetConversationResponse, err error) {
+func (ss *ConversationLoader) GetConversation(ctx context.Context, req GetConversationRequest) (resp *GetConversationResponse, err error) {
 	resp = &GetConversationResponse{}
 	// 获取会话实体
-	convEntity, err := entity.NewConversationEntityByID(ctx, req.ConvID)
+	convEntity, err := entity.GetConversationEntityByID(ctx, req.ConvID)
 	if err != nil {
 		return nil, err
 	}
+	if convEntity == nil {
+		return nil, errors.New("未查找到相关会话")
+	}
 	// 获取消息列表
 	msgResp, err := convEntity.GetMessages(ctx, entity.GetMessagesRequest{
-		Limit:         req.Limit,
-		TimestampFrom: req.TimestampFrom,
-		TimestampTo:   req.TimestampTo,
-		ViewerID:      req.ViewerID,
+		Limit:     req.Limit,
+		SeqIDFrom: req.SeqIDFrom,
+		SeqIDTo:   req.SeqIDTo,
+		ViewerID:  req.ViewerID,
 	})
 	if err != nil {
 		return nil, err
@@ -57,7 +58,7 @@ func (ss *ConversationLoadService) GetConversation(ctx context.Context, req GetC
 	return resp, err
 }
 
-func (ss *ConversationLoadService) ConstructMsgAggs(ctx context.Context, resp *entity.GetMessagesResponse) ([]*aggregate.MessageFromReceiver, error) {
+func (ss *ConversationLoader) ConstructMsgAggs(ctx context.Context, resp *entity.GetMessagesResponse) ([]*aggregate.MessageFromReceiver, error) {
 	msgTos := resp.MsgTos
 	msgFroms := resp.MsgFroms
 	msgFromsRecord := ss.ConstructMsgFromsMap(msgFroms)
@@ -68,11 +69,9 @@ func (ss *ConversationLoadService) ConstructMsgAggs(ctx context.Context, resp *e
 	// 顺序是按照msgTos来的, 不能简单的进行组装, 需要保序
 	for i := range msgTos {
 		msgFromPo := msgFromsRecord[MessageID(msgTos[i].MessageID)]
-
 		msgFrom, err := entity.NewMessageFromByPo(msgFromPo)
 		if err != nil {
 			errMsg := fmt.Sprintf("entity.NewMessageFromByPo fail: msgFroms is %+v, err is %+v", msgFroms[i], err)
-			log.Printf(errMsg)
 			return nil, errors.Wrap(err, errMsg)
 		}
 		msgTo := entity.NewMessageToByPo(msgTos[i])
@@ -91,11 +90,26 @@ func (m MessageID) ToInt64() int64 {
 	return cast.ToInt64(m)
 }
 
-func (ss *ConversationLoadService) ConstructMsgFromsMap(msgFromPos []*po.MessageFrom) map[MessageID]*po.MessageFrom {
+func (ss *ConversationLoader) ConstructMsgFromsMap(msgFromPos []*po.MessageFrom) map[MessageID]*po.MessageFrom {
 	ret := make(map[MessageID]*po.MessageFrom)
 	for i := range msgFromPos {
 		msgFromPo := msgFromPos[i]
 		ret[MessageID(msgFromPo.MessageID)] = msgFromPo
 	}
 	return ret
+}
+
+func (ss *ConversationLoader) GetHelperConvEntityByUserID(ctx context.Context, userID int64) (*entity.Conversation, error) {
+	convRepo := repo.NewConversationRepo()
+	convPo, err := convRepo.GetConvPo(ctx, repo.GetConvPoRequest{
+		UserID: userID,
+		Type:   common.HelperConversationType,
+	})
+	if err != nil {
+		return nil, err
+	}
+	if convPo == nil {
+		return nil, nil
+	}
+	return entity.NewConversationEntityByPo(ctx, convPo), nil
 }

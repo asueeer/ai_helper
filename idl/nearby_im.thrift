@@ -45,6 +45,8 @@ struct SendMessageResponse{
 struct LoadConversationsRequest{
     1: i64 limit;
     2: i64 cursor; // 相当于是offset
+
+    3: i32 direction; // 拉取的方向; 枚举值 +1: 由现在到未来; -1: 由现在到过去; （默认为-1）
 }
 
 struct LoadConversationsData{
@@ -59,22 +61,6 @@ struct LoadConversationsResponse{
     2: LoadConversationsData data;
 }
 
-struct LoadConversationsByUserRequest{
-    1: list<Conversation> conversations;
-    2: i64 new_cursor;
-    3: bool has_more;
-}
-
-struct LoadConversationsByUserData{
-    1: i64 limit;
-    2: i64 cursor; // 拉取该cursor之后的所有会话
-}
-
-struct LoadConversationsByUserResponse{
-    1: Meta meta;
-    2: LoadConversationsByUserData data;
-}
-
 struct Conversation{
     1: i64 conv_id;                   // 会话id
     2: string type;                   // 会话类型
@@ -83,6 +69,7 @@ struct Conversation{
     5: list<Participant> paticipants; // 参与者
     6: Message last_msg;              // 最近的一条消息
     7: string conv_icon;              // 会话头像
+    8: string conv_title;             // 会话的title
 }
 
 struct Participant{
@@ -92,18 +79,12 @@ struct Participant{
 
 struct LoadConversationDetailRequest{
     1: i64 conv_id; // 会话id
-    // 0: 拉取最近的会话信息;
-    // cursor表示向时间戳之前的时间位置来拉取消息
-    2: i64 cursor;
+    2: i64 cursor; // 0: 拉取最近的会话信息;
     3: i64 limit; // 默认为50条
 
     4: string role; // 用户身份; "visitor" 游客; "be_helper": 后台客服
-}
 
-struct LoadConversationDetailByUserRequest{
-    1: i64 conv_id;         // 会话id
-    2: i64 cursor;          // 客户端本地消息的存储位置，用于从服务端获取该位置之后的消息
-    3: i64 limit;           // 默认50条
+    5: i32 direction; // 拉取的方向; 枚举值 +1: 由现在到未来; -1: 由现在到过去 （默认为-1）
 }
 
 struct LoadConversationDetailData{
@@ -117,25 +98,15 @@ struct LoadConversationDetailResponse{
     2: LoadConversationDetailData data;
 }
 
-struct LoadConversationDetailByUserData{
-    1: list<Message> messages;
-    2: bool has_more;  // 是否包含更多会话
-    3: i64 new_cursor; // 下一次拉取前, 需要传给后端的时间戳
-}
-
-struct LoadConversationDetailByUserResponse{
-    1: Meta meta;
-    2: LoadConversationDetailByUserData data;
-}
-
 
 struct Message{
-    1: i64 sender_id;    // 发送方id
-    2: i64 receiver_id;  // 接收方id
-    3: string content;   // 消息内容
-    4: string type;      // 消息类型
-    5: string status;    // 消息状态
-    6: string timestamp; // 时间戳
+    1: i64 sender_id;        // 发送方id
+    2: i64 receiver_id;      // 接收方id
+    3: string content;       // 消息内容
+    4: string type;          // 消息类型
+    5: string status;        // 消息状态
+    6: string timestamp;     // 时间戳
+    7: string sender_name;   // 发送方的用户名
 }
 
 struct Meta{
@@ -147,8 +118,6 @@ struct Meta{
 service ImService{
     CreateConversationResponse CreateConversation(1: CreateConversationRequest req) (api.post="/im/create_conversation"); // 创建会话
     LoadConversationDetailResponse LoadConversation(1: LoadConversationDetailRequest req) (api.post="/im/load_conversation_detail"); // 加载会话详情
-     LoadConversationDetailByUserResponse LoadConversationDetailByUser(1: LoadConversationDetailByUserRequest req); // 加载会话详情(用户视角)
     LoadConversationsResponse LoadConversations(1: LoadConversationsRequest req) (api.post="/im/load_conversations"); // 加载会话列表
-    // LoadConversationsByUserResponse LoadConversationsByUser(1: LoadConversationsByUserRequest); // 加载会话列表（用户视角）
     SendMessageResponse SendMessage(1: SendMessageRequest req) (api.post="im/send_message"); // 发送消息
 }

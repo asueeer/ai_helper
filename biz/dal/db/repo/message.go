@@ -4,12 +4,8 @@ import (
 	"ai_helper/biz/dal/db"
 	"ai_helper/biz/dal/db/po"
 	"context"
-	"log"
-	"time"
-
-	"github.com/pkg/errors"
-
 	"github.com/jinzhu/gorm"
+	"github.com/pkg/errors"
 )
 
 type MessageRepo struct {
@@ -72,19 +68,16 @@ func (repo *MessageRepo) GetMessageFroms(ctx context.Context, req GetMessageFrom
 	if err != nil {
 		return nil, errors.Wrap(err, "sql.Find(msgFroms) fail")
 	}
-	for i := range msgFroms {
-		log.Printf("msgFroms[%d]: %+v", i, msgFroms[i])
-	}
 
 	return msgFroms, err
 }
 
 type GetMessagesRequest struct {
-	ConvID        int64      `json:"conv_id"`
-	Limit         int64      `json:"limit"`
-	TimestampFrom *time.Time `json:"timestamp_from"`
-	TimestampTo   *time.Time `json:"timestamp_to"`
-	OwnerID       int64      `json:"owner_id"`
+	ConvID    int64 `json:"conv_id"`
+	Limit     int64 `json:"limit"`
+	SeqIDFrom int64 `json:"seq_id_from"`
+	SeqIDTo   int64 `json:"seq_id_to"`
+	OwnerID   int64 `json:"owner_id"`
 }
 
 func (repo *MessageRepo) GetMessageTos(ctx context.Context, req GetMessagesRequest) (pos []*po.MessageTo, total int64, err error) {
@@ -92,16 +85,16 @@ func (repo *MessageRepo) GetMessageTos(ctx context.Context, req GetMessagesReque
 	if req.ConvID != 0 {
 		sql = sql.Where("conv_id = ?", req.ConvID)
 	}
-	if req.TimestampFrom != nil {
-		sql = sql.Where("timestamp > ?", req.TimestampFrom)
+	if req.SeqIDFrom != 0 {
+		sql = sql.Where("seq_id > ?", req.SeqIDFrom)
 	}
-	if req.TimestampTo != nil {
-		sql = sql.Where("timestamp < ?", req.TimestampTo)
+	if req.SeqIDTo != 0 {
+		sql = sql.Where("seq_id < ?", req.SeqIDTo)
 	}
 	if req.OwnerID != 0 {
 		sql = sql.Where("owner_id = ?", req.OwnerID)
 	}
-	sql = sql.Order("timestamp desc")
+	sql = sql.Order("seq_id desc")
 	sql = sql.Limit(req.Limit)
 	err = sql.Find(&pos).Error
 	if err != nil {

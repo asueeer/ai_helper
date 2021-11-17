@@ -12,6 +12,7 @@ import (
 // LoadConversationDetail [Post] /im/load_conversation_detail
 func LoadConversationDetail(c *gin.Context) {
 	// 加载会话详情
+	// 另外一个要做的是让会话未读消息数清零
 	req := &model.LoadConversationDetailRequest{}
 	if err := c.ShouldBindBodyWith(req, binding.JSON); err != nil {
 		c.JSON(400, err.Error())

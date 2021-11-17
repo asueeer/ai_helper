@@ -8,7 +8,6 @@ import (
 	"ai_helper/biz/domain/entity"
 	"ai_helper/biz/domain/val_obj"
 	"context"
-	"log"
 	"time"
 
 	"github.com/pkg/errors"
@@ -18,6 +17,7 @@ import (
 type ConversationService struct {
 }
 
+// CreateHelperConversation 创建客服会话
 func (ss *ConversationService) CreateHelperConversation(ctx context.Context) (*entity.Conversation, error) {
 	user := common.GetUser(ctx)
 	// 1. 创建一条会话实体
@@ -29,11 +29,9 @@ func (ss *ConversationService) CreateHelperConversation(ctx context.Context) (*e
 			status:   common.HelperConvStatusWaiting,
 		},
 	)
-	log.Printf("convEntity: %+v", convEntity)
 	// 将该会话持久化到数据库
 	_, err := convRepo.CreateConversation(ctx, convEntity.ToPo())
 	if err != nil {
-		log.Printf("convRepo.CreateConversation fail, err: %+v", err)
 		return nil, errors.Wrap(err, "CreateConversation fail.")
 	}
 

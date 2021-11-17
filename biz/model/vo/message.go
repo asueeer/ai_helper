@@ -7,7 +7,7 @@ type Message struct {
 	Content    MsgContent `json:"content"`     // 消息内容
 	Type       string     `json:"type"`        // 消息类型
 	Status     string     `json:"status"`      // 消息状态
-	Timestamp  int64      `json:"timestamp"`   // 消息时间戳
+	SeqID      int64      `json:"timestamp"`   // 用于保序的序列号(历史原因，现在json字段是timestamp之后通知前端进行改动)
 	Role       string     `json:"role"`        // 消息发送者的身份, 游客:"visitor"; 客服:"helper"
 }
 

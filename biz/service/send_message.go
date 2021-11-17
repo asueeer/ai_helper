@@ -3,28 +3,59 @@ package service
 import (
 	"ai_helper/biz/common"
 	"ai_helper/biz/dal/db/repo"
+	"ai_helper/biz/domain/aggregate"
 	"ai_helper/biz/domain/entity"
 	domainService "ai_helper/biz/domain/service"
 	"ai_helper/biz/model"
+	"ai_helper/biz/util"
 	"context"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
 	"github.com/spf13/cast"
+	"time"
 )
 
 type SendMessageService struct {
 }
 
-func (ss *SendMessageService) checkParams(ctx context.Context, req *model.SendMessageRequest) error {
-	// todo 权限校验
-	// 是否当前用户有权限发送消息？
+// 当前用户是否有权限发送消息？
+func (ss *SendMessageService) checkParams(ctx context.Context, req *model.SendMessageRequest) (err error) {
+	var convAgg *aggregate.ConversationAggregate
+	{
+		// 1. 先看有没有这个会话
+		convAgg, err = aggregate.GetConvAggByID(ctx, cast.ToInt64(req.ConvID))
+		if err != nil {
+			return err
+		}
+		if convAgg == nil {
+			return errors.New("不存在的会话id")
+		}
+	}
+	{
+		// 2. 再看用户具不具有发送消息的资格
+		hasAuth := false
+		user := common.GetUser(ctx)
+		for i := range convAgg.ConvRels {
+			convRel := convAgg.ConvRels[i]
+			if convRel.UserID == user.UserID {
+				hasAuth = true
+			}
+		}
+		// 还有一种情况没有考虑, 如果当前用户是客服, 则无需进行这种发送消息的权限校验
+		if !hasAuth {
+			return errors.New("似乎没有这个会话的权限????")
+		}
+	}
 	return nil
 }
 
 func (ss *SendMessageService) Execute(ctx *gin.Context, req *model.SendMessageRequest) (*model.SendMessageResponse, error) {
+	if req.TimestampMs == 0 {
+		req.TimestampMs = util.Sec2Mirco(time.Now().Unix())
+	}
 	if err := ss.checkParams(ctx, req); err != nil {
-		return nil, common.NewBizErr(common.BizErrCode, "ops, 发送消息出错了", err)
+		return nil, common.NewBizErr(common.BizErrCode, err.Error(), err)
 	}
 	msgFromEntity, err := ss.SendMsg(ctx, req)
 	if err != nil {
@@ -54,13 +85,13 @@ func (ss *SendMessageService) SendMsg(ctx context.Context, req *model.SendMessag
 	}
 	var messageDomainService domainService.MessageService
 	sendMsgReq := domainService.SendMessageRequest{
-		ConvID:     cast.ToInt64(req.ConvID),
-		Role:       req.Role,
-		ReceiverID: cast.ToInt64(req.ReceiverID),
-		Content:    msgJson,
-		Type:       req.Type,
-		Status:     req.Status,
-		Timestamp:  req.Timestamp,
+		ConvID:    cast.ToInt64(req.ConvID),
+		Role:      req.Role,
+		Content:   msgJson,
+		Type:      req.Type,
+		Status:    req.Status,
+		Timestamp: util.Micro2Sec(req.TimestampMs),
+		SeqID:     req.TimestampMs,
 	}
 	msgFromEntity, err := messageDomainService.SendMessage(ctx, sendMsgReq)
 	return msgFromEntity, err
@@ -77,7 +108,14 @@ func (ss *SendMessageService) ExecuteCallback(ctx context.Context, req *model.Se
 	if msg == nil {
 		return errors.New("msg is nil")
 	}
-	err := convRepo.UpdateLastMsgID(ctx, cast.ToInt64(req.ConvID), msg.MessageID)
-	err = convRepo.UpdateTimestamp(ctx, cast.ToInt64(req.ConvID), msg.Timestamp)
-	return err
+	if err := convRepo.UpdateLastMsgID(ctx, cast.ToInt64(req.ConvID), msg.MessageID); err != nil {
+		return err
+	}
+	if err := convRepo.UpdateSeqID(ctx, cast.ToInt64(req.ConvID), msg.SeqID); err != nil {
+		return err
+	}
+	if err := convRepo.UpdateTimestamp(ctx, cast.ToInt64(req.ConvID), msg.CreateAt); err != nil {
+		return err
+	}
+	return nil
 }

@@ -1,7 +1,11 @@
 package entity
 
 import (
+	"ai_helper/biz/model/vo"
+	"ai_helper/biz/util"
 	"context"
+	"github.com/jinzhu/gorm"
+	"github.com/spf13/cast"
 	"time"
 
 	"ai_helper/biz/common"
@@ -25,6 +29,7 @@ type Conversation struct {
 	LastMsg      *MessageFrom `json:"last_msg"`         // 最新的一条消息
 	Participants []int64      `json:"participants"`     // 会话参与者
 	Timestamp    time.Time    `json:"timestamp"`        // 会话时间戳
+	SeqID        int64        `json:"seq_id"`           // 序列号, 用于保序
 }
 
 func (c *Conversation) ToPo() po.Conversation {
@@ -35,6 +40,7 @@ func (c *Conversation) ToPo() po.Conversation {
 		Creator:   c.Creator,
 		Status:    c.Status,
 		Timestamp: c.Timestamp,
+		SeqID:     util.Sec2Mirco(c.Timestamp.Unix()),
 	}
 }
 
@@ -42,13 +48,16 @@ func (c *Conversation) IsHelperType() bool {
 	return c.Type == common.HelperConversationType
 }
 
-func NewConversationEntityByID(ctx context.Context, convID int64) (*Conversation, error) {
+func GetConversationEntityByID(ctx context.Context, convID int64) (*Conversation, error) {
 	convRepo := repo.NewConversationRepo()
 	convPo, err := convRepo.GetConvPo(ctx,
 		repo.GetConvPoRequest{
 			ConvID: convID,
 		},
 	)
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -72,10 +81,10 @@ func NewConversationEntityByPo(ctx context.Context, convPo *po.Conversation) *Co
 }
 
 type GetMessagesRequest struct {
-	Limit         int64      `json:"limit"`
-	TimestampFrom *time.Time `json:"timestamp_from"`
-	TimestampTo   *time.Time `json:"timestamp_to"`
-	ViewerID      int64      `json:"viewer_id"`
+	Limit     int64 `json:"limit"`
+	SeqIDFrom int64 `json:"seq_id_from"`
+	SeqIDTo   int64 `json:"seq_id_to"`
+	ViewerID  int64 `json:"viewer_id"`
 }
 
 type GetMessagesResponse struct {
@@ -89,11 +98,11 @@ func (c *Conversation) GetMessages(ctx context.Context, req GetMessagesRequest) 
 	resp := &GetMessagesResponse{}
 	// 查询收件箱里的消息
 	msgTos, total, err := msgRepo.GetMessageTos(ctx, repo.GetMessagesRequest{
-		ConvID:        c.ConvID,
-		Limit:         req.Limit,
-		TimestampFrom: req.TimestampFrom,
-		TimestampTo:   req.TimestampTo,
-		OwnerID:       req.ViewerID,
+		ConvID:    c.ConvID,
+		Limit:     req.Limit,
+		SeqIDFrom: req.SeqIDFrom,
+		SeqIDTo:   req.SeqIDTo,
+		OwnerID:   req.ViewerID,
 	})
 	if err != nil {
 		return nil, err
@@ -109,6 +118,15 @@ func (c *Conversation) GetMessages(ctx context.Context, req GetMessagesRequest) 
 		MsgTos:   msgTos,
 	}
 	return resp, nil
+}
+
+func (c *Conversation) ToVo() *vo.Conversation {
+	return &vo.Conversation{
+		ConvID:    cast.ToString(c.ConvID),
+		Type:      c.Type,
+		UnRead:    0,
+		Timestamp: util.Sec2Mirco(c.Timestamp.Unix()),
+	}
 }
 
 func GetMessageFroms(ctx context.Context, messageTos []*po.MessageTo) ([]*po.MessageFrom, error) {

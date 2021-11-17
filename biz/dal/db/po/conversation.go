@@ -13,7 +13,8 @@ type Conversation struct {
 	Creator   int64     `gorm:"column:creator"`     // 创建人id
 	Status    string    `gorm:"column:status"`      // 会话状态
 	LastMsgID int64     `gorm:"column:last_msg_id"` // 最近一条消息的msg_id
-	Timestamp time.Time `gorm:"column:timestamp"`   // 会话时间戳
+	Timestamp time.Time `gorm:"timestamp"`          // 时间戳
+	SeqID     int64     `gorm:"column:seq_id"`      // 用于保序的序列号
 	gorm.Model
 }
 

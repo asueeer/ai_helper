@@ -14,10 +14,10 @@ type ConversationsLoader struct {
 }
 
 type LoadConversationsRequest struct {
-	UserID        int64 `json:"user_id"`
-	Limit         int64 `json:"limit"`
-	TimestampFrom int64 `json:"timestamp_from"`
-	TimestampTo   int64 `json:"timestamp_to"`
+	UserID    int64 `json:"user_id"`
+	Limit     int64 `json:"limit"`
+	SeqIDFrom int64 `json:"seq_id_from"`
+	SeqIDTo   int64 `json:"seq_id_to"`
 }
 
 // LoadConversations 加载会话列表
@@ -25,10 +25,10 @@ func (ss *ConversationsLoader) LoadConversations(ctx context.Context, req LoadCo
 	convRepo := repo.NewConversationRepo()
 	// 1. 根据条件，找到要加载的convID列表
 	convRelPos, total, err := convRepo.GetUserConvRelPos(ctx, repo.GetUserConvRelPosRequest{
-		UserID:        req.UserID,
-		Limit:         req.Limit,
-		TimestampFrom: req.TimestampFrom,
-		TimestampTo:   req.TimestampTo,
+		UserID:    req.UserID,
+		Limit:     req.Limit,
+		SeqIDFrom: req.SeqIDFrom,
+		SeqIDTo:   req.SeqIDTo,
 	})
 	if err != nil {
 		return nil, 0, err
@@ -96,7 +96,7 @@ func (ss *ConversationsLoader) LoadLastMsgs(ctx context.Context, entities []*ent
 			MessageID: msg.MessageID,
 			ConvID:    msg.ConvID,
 			SenderID:  msg.SenderID,
-			Timestamp: msg.Timestamp,
+			SeqID:     msg.SeqID,
 		}
 		err = json.Unmarshal(msg.Content, &entities[i].LastMsg.Content)
 		if err != nil {

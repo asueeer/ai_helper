@@ -4,10 +4,9 @@ import (
 	"ai_helper/biz/dal/db"
 	"ai_helper/biz/dal/db/po"
 	"context"
+	"github.com/jinzhu/gorm"
 	"github.com/pkg/errors"
 	"time"
-
-	"github.com/jinzhu/gorm"
 )
 
 type ConversationRepo struct {
@@ -37,7 +36,9 @@ func (repo *ConversationRepo) CreateUserConvRelPo(ctx context.Context, userConvR
 }
 
 type GetConvPoRequest struct {
-	ConvID int64 `json:"conv_id"`
+	ConvID int64  `json:"conv_id"`
+	UserID int64  `json:"user_id"`
+	Type   string `json:"type"`
 }
 
 func (repo *ConversationRepo) GetConvPo(ctx context.Context, req GetConvPoRequest) (*po.Conversation, error) {
@@ -46,6 +47,12 @@ func (repo *ConversationRepo) GetConvPo(ctx context.Context, req GetConvPoReques
 	if req.ConvID != 0 {
 		sql = sql.Where("conv_id = ?", req.ConvID)
 	}
+	if req.UserID != 0 {
+		sql = sql.Where("creator = ?", req.UserID)
+	}
+	if req.Type != "" {
+		sql = sql.Where("type = ?", req.Type)
+	}
 	if err := sql.Find(&conv).Error; err != nil {
 		return nil, err
 	}
@@ -53,22 +60,28 @@ func (repo *ConversationRepo) GetConvPo(ctx context.Context, req GetConvPoReques
 }
 
 type GetUserConvRelPosRequest struct {
-	UserID        int64 `json:"user_id"`
-	Limit         int64 `json:"limit"`
-	TimestampFrom int64 `json:"timestamp_from"`
-	TimestampTo   int64 `json:"timestamp_to"`
+	ConvID    int64 `json:"conv_id"`
+	UserID    int64 `json:"user_id"`
+	Limit     int64 `json:"limit"`
+	SeqIDFrom int64 `json:"seq_id_from"`
+	SeqIDTo   int64 `json:"seq_id_to"`
 }
 
 func (repo *ConversationRepo) GetUserConvRelPos(ctx context.Context, req GetUserConvRelPosRequest) (pos []*po.UserConvRel, total int64, err error) {
 	sql := repo.db.Model(po.UserConvRel{})
 	pos = make([]*po.UserConvRel, 0)
-	sql = sql.Where("user_id = ?", req.UserID)
-	sql = sql.Joins("left join conversation on conversation.conv_id = user_conv_rel.conv_id")
-	if req.TimestampTo != 0 {
-		sql = sql.Where("conversation.timestamp < ?", req.TimestampTo)
+	if req.ConvID != 0 {
+		sql = sql.Where("user_conv_rel.conv_id = ?", req.ConvID)
 	}
-	if req.TimestampFrom != 0 {
-		sql = sql.Where("conversation.timestamp > ?", req.TimestampFrom)
+	sql = sql.Joins("left join conversation on conversation.conv_id = user_conv_rel.conv_id")
+	if req.UserID != 0 {
+		sql = sql.Where("user_conv_rel.user_id = ?", req.UserID)
+	}
+	if req.SeqIDTo != 0 {
+		sql = sql.Where("conversation.seq_id < ?", req.SeqIDTo)
+	}
+	if req.SeqIDFrom != 0 {
+		sql = sql.Where("conversation.timestamp > ?", req.SeqIDFrom)
 	}
 	sql = sql.Order("conversation.timestamp desc")
 	sql = sql.Limit(req.Limit)
@@ -105,6 +118,12 @@ func (repo *ConversationRepo) GetConvPos(ctx context.Context, req GetConvPosRequ
 func (repo *ConversationRepo) UpdateLastMsgID(ctx context.Context, convID int64, msgID int64) error {
 	sql := repo.db.Model(po.Conversation{})
 	sql = sql.Where("conv_id = ?", convID).UpdateColumn("last_msg_id", msgID)
+	return sql.Error
+}
+
+func (repo *ConversationRepo) UpdateSeqID(ctx context.Context, convID int64, seqID int64) error {
+	sql := repo.db.Model(po.Conversation{})
+	sql = sql.Where("conv_id = ?", convID).UpdateColumn("seq_id", seqID)
 	return sql.Error
 }
 

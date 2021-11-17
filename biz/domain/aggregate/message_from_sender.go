@@ -45,7 +45,7 @@ func (agg *MessageAggregate) SyncReceiverBox(ctx context.Context) error {
 }
 
 func (agg *MessageAggregate) FindConvEntity(ctx context.Context) (*entity.Conversation, error) {
-	convEntity, err := entity.NewConversationEntityByID(ctx, agg.MessageFrom.ConvID)
+	convEntity, err := entity.GetConversationEntityByID(ctx, agg.MessageFrom.ConvID)
 	if err != nil {
 		return nil, err
 	}
@@ -70,13 +70,13 @@ func (agg *MessageAggregate) ConstructHelperMsgTos(ctx context.Context) []*entit
 		MessageID: msgFrom.MessageID,
 		ConvID:    msgFrom.ConvID,
 		OwnerID:   conv.Creator,
-		Timestamp: msgFrom.Timestamp,
+		SeqID:     msgFrom.SeqID,
 	}
 	agg.MessageTos[1] = &entity.MessageTo{
 		MessageID: msgFrom.MessageID,
 		ConvID:    msgFrom.ConvID,
 		OwnerID:   common.HelperID,
-		Timestamp: msgFrom.Timestamp,
+		SeqID:     msgFrom.SeqID,
 	}
 	if msgFrom.SenderID == common.HelperID {
 		// 客服发的消息
@@ -90,7 +90,7 @@ func (agg *MessageAggregate) ConstructHelperMsgTos(ctx context.Context) []*entit
 	return agg.MessageTos
 }
 
-func NewMessageAggregateByID(ctx context.Context, msgID int64) (*MessageAggregate, error) {
+func GetMessageAggregateByID(ctx context.Context, msgID int64) (*MessageAggregate, error) {
 	msgRepo := repo.NewMessageRepo()
 	msgAgg := &MessageAggregate{
 		MessageID: msgID,

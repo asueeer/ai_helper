@@ -43,7 +43,8 @@ type MessageFrom struct {
 	Status     string     `json:"status,omitempty"`      // 消息状态
 	Content    MsgContent `json:"content"`               // 消息内容
 	Type       string     `json:"type"`                  // 消息类型
-	Timestamp  time.Time  `json:"timestamp"`             // 消息时间戳
+	SeqID      int64      `json:"seq_id"`                // 用于保序的序列号
+	CreateAt   time.Time  `json:"create_at"`             // 创建时间戳
 }
 
 func (f *MessageFrom) Persist(ctx context.Context) error {
@@ -52,10 +53,11 @@ func (f *MessageFrom) Persist(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	_, err = msgRepo.CreateMessageFrom(ctx, *msgPo)
+	msgFromPo, err := msgRepo.CreateMessageFrom(ctx, *msgPo)
 	if err != nil {
 		return err
 	}
+	f.CreateAt = msgFromPo.CreatedAt
 	return nil
 }
 
@@ -73,7 +75,8 @@ func NewMessageFromByPo(msgPo *po.MessageFrom) (*MessageFrom, error) {
 		ReceiverID: msgPo.ReceiverID,
 		Content:    content,
 		Type:       msgPo.Type,
-		Timestamp:  msgPo.Timestamp,
+		SeqID:      msgPo.SeqID,
+		CreateAt:   msgPo.CreatedAt,
 	}, nil
 }
 
@@ -90,7 +93,7 @@ func (f *MessageFrom) ToPo() (*po.MessageFrom, error) {
 		Content:    j,
 		Type:       f.Type,
 		ConvID:     f.ConvID,
-		Timestamp:  f.Timestamp,
+		SeqID:      f.SeqID,
 	}, nil
 }
 
@@ -102,9 +105,9 @@ func (f *MessageFrom) ToVo() *vo.Message {
 		Content: vo.MsgContent{
 			Text: f.Content.Text,
 		},
-		Type:      f.Type,
-		Status:    f.Status,
-		Timestamp: f.Timestamp.Unix() * 1000,
+		Type:   f.Type,
+		Status: f.Status,
+		SeqID:  f.SeqID,
 	}
 	if msgVo.SenderID == cast.ToString(common.HelperID) {
 		msgVo.Role = common.ConvRoleHelper
@@ -115,12 +118,12 @@ func (f *MessageFrom) ToVo() *vo.Message {
 }
 
 type MessageTo struct {
-	ID        int64     `json:"id"`         // 自增id, 无业务意义
-	MessageID int64     `json:"message_id"` // 消息id
-	ConvID    int64     `json:"conv_id"`    // 会话id
-	OwnerID   int64     `json:"owner_id"`   // 收件箱所有者id
-	Timestamp time.Time `json:"timestamp"`  // 消息时间戳
-	HasRead   int32     `json:"has_read"`   // 是否已读, 1为未读; 2为已读
+	ID        int64 `json:"id"`         // 自增id, 无业务意义
+	MessageID int64 `json:"message_id"` // 消息id
+	ConvID    int64 `json:"conv_id"`    // 会话id
+	OwnerID   int64 `json:"owner_id"`   // 收件箱所有者id
+	SeqID     int64 `json:"timestamp"`  // 用于保序的序列号
+	HasRead   int32 `json:"has_read"`   // 是否已读, 1为未读; 2为已读
 }
 
 func NewMessageToByPo(po *po.MessageTo) *MessageTo {
@@ -129,7 +132,7 @@ func NewMessageToByPo(po *po.MessageTo) *MessageTo {
 		MessageID: po.MessageID,
 		ConvID:    po.ConvID,
 		OwnerID:   po.OwnerID,
-		Timestamp: po.TimeStamp,
+		SeqID:     po.SeqID,
 		HasRead:   po.HasRead,
 	}
 }
@@ -149,7 +152,7 @@ func (t *MessageTo) ToPo() po.MessageTo {
 		MessageID: t.MessageID,
 		ConvID:    t.ConvID,
 		OwnerID:   t.OwnerID,
-		TimeStamp: t.Timestamp,
+		SeqID:     t.SeqID,
 		HasRead:   t.HasRead,
 	}
 }

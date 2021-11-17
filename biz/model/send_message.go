@@ -3,8 +3,7 @@ package model
 import "ai_helper/biz/model/vo"
 
 type SendMessageRequest struct {
-	ReceiverID string `form:"receiver_id" json:"receiver_id"` // 接收方id, 可不传;
-	ConvID     string `form:"conv_id" json:"conv_id"`         // 会话id
+	ConvID string `form:"conv_id" json:"conv_id"` // 会话id
 	/*
 		枚举值[
 		"visitor": 游客;
@@ -24,9 +23,9 @@ type SendMessageRequest struct {
 		"video": 视频;
 		]
 	*/
-	Type      string `form:"type" json:"type"`           // 消息类型
-	Status    string `form:"status" json:"status"`       // 消息状态
-	Timestamp int64  `form:"timestamp" json:"timestamp"` // 消息时间戳, 精确到微妙
+	Type        string `form:"type" json:"type"`           // 消息类型
+	Status      string `form:"status" json:"status"`       // 消息状态
+	TimestampMs int64  `form:"timestamp" json:"timestamp"` // 消息时间戳, 精确到毫秒
 }
 
 type SendMessageData struct {

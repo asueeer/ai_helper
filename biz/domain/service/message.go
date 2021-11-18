@@ -44,9 +44,9 @@ func (ss *MessageService) SendMessage(ctx context.Context, req SendMessageReques
 	return msgAgg.MessageFrom, nil
 }
 
-func (ss *MessageService) ConstructMessageAggregate(ctx context.Context, req SendMessageRequest) (*aggregate.MessageAggregate, error) {
+func (ss *MessageService) ConstructMessageAggregate(ctx context.Context, req SendMessageRequest) (msgAgg *aggregate.MessageAggregate, err error) {
 	user := common.GetUser(ctx)
-	msgAgg := aggregate.MessageAggregate{
+	msgAgg = &aggregate.MessageAggregate{
 		MessageFrom: &entity.MessageFrom{
 			SenderID:   user.UserID,
 			ConvID:     req.ConvID,
@@ -56,14 +56,25 @@ func (ss *MessageService) ConstructMessageAggregate(ctx context.Context, req Sen
 			CreateAt:   time.Now(),
 		},
 	}
-	// 以客服的身份发消息
-	if req.Role == common.ConvRoleHelper {
-		msgAgg.MessageFrom.SenderID = common.HelperID
-	}
-	// 装载消息内容
-	err := json.Unmarshal(req.Content, &msgAgg.MessageFrom.Content)
+	// 装载convEntity
+	_, err = msgAgg.FindConvEntity(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return &msgAgg, nil
+	// 以客服的身份发消息
+	if req.Role == common.ConvRoleHelper {
+		msgAgg.MessageFrom.SenderID = common.HelperID
+		msgAgg.MessageFrom.ReceiverID = msgAgg.Conv.Creator
+	}
+	// 以游客的身份发送消息
+	if req.Role == common.ConvRoleVisitor {
+		msgAgg.MessageFrom.SenderID = user.UserID
+		msgAgg.MessageFrom.ReceiverID = common.HelperID
+	}
+	// 装载消息内容
+	err = json.Unmarshal(req.Content, &msgAgg.MessageFrom.Content)
+	if err != nil {
+		return nil, err
+	}
+	return msgAgg, nil
 }

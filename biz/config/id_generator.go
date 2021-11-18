@@ -17,3 +17,7 @@ func init() {
 func GenerateIDInt64() int64 {
 	return iDGenerator.Generate().Int64()
 }
+
+func GenerateIDString() string {
+	return iDGenerator.Generate().String()
+}

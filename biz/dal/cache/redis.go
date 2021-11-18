@@ -56,3 +56,27 @@ func HScan(ctx context.Context, key string, cursor uint64, match string, count i
 func HDel(ctx context.Context, key string, fields ...string) *redis.IntCmd {
 	return redisClient.HDel(ctx, key, fields...)
 }
+
+func HSet(ctx context.Context, key string, fields ...string) *redis.IntCmd {
+	return redisClient.HSet(ctx, key, fields)
+}
+
+func HMSet(ctx context.Context, key string, values ...string) *redis.BoolCmd {
+	return redisClient.HMSet(ctx, key, values)
+}
+
+func HGetAll(ctx context.Context, key string) *redis.StringStringMapCmd {
+	return redisClient.HGetAll(ctx, key)
+}
+
+func ExpireAt(ctx context.Context, key string, tm time.Time) {
+	redisClient.ExpireAt(ctx, key, tm)
+}
+
+func SAdd(ctx context.Context, key string, members ...string) *redis.IntCmd {
+	return redisClient.SAdd(ctx, key, members)
+}
+
+func SRemove(ctx context.Context, key string, members ...string) *redis.IntCmd {
+	return redisClient.SRem(ctx, key, members)
+}

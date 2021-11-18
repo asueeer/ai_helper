@@ -2,6 +2,7 @@ package main
 
 import (
 	"ai_helper/biz/handler"
+	"ai_helper/biz/handler/ws_handler"
 	"ai_helper/biz/middleware"
 
 	"github.com/gin-gonic/gin"
@@ -30,4 +31,7 @@ func register(r *gin.Engine) {
 	r.POST("/api/im/send_message", handler.SendMessage, handler.SendMessageCallBack)
 	r.POST("/api/im/load_conversation_detail", handler.LoadConversationDetail)
 	r.POST("/api/im/load_conversations", handler.LoadConversations)
+
+	// 长连接
+	r.GET("/api/im/ws", ws_handler.WSHandler)
 }

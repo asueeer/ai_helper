@@ -30,10 +30,6 @@ func (agg *MessageAggregate) SyncReceiverBox(ctx context.Context) error {
 			给这些用户的收件箱发送消息, 持久化起来
 	*/
 	var err error
-	_, err = agg.FindConvEntity(ctx)
-	if err != nil {
-		return err
-	}
 	msgTos := agg.ConstructMessageTos(ctx)
 	for i := range msgTos {
 		err = msgTos[i].Persist(ctx)

@@ -80,3 +80,7 @@ func SAdd(ctx context.Context, key string, members ...string) *redis.IntCmd {
 func SRemove(ctx context.Context, key string, members ...string) *redis.IntCmd {
 	return redisClient.SRem(ctx, key, members)
 }
+
+func SMembers(ctx context.Context, key string) *redis.StringSliceCmd {
+	return redisClient.SMembers(ctx, key)
+}

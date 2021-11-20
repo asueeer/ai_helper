@@ -123,7 +123,6 @@ type MessageTo struct {
 	ConvID    int64 `json:"conv_id"`    // 会话id
 	OwnerID   int64 `json:"owner_id"`   // 收件箱所有者id
 	SeqID     int64 `json:"timestamp"`  // 用于保序的序列号
-	HasRead   int32 `json:"has_read"`   // 是否已读, 1为未读; 2为已读
 }
 
 func NewMessageToByPo(po *po.MessageTo) *MessageTo {
@@ -133,7 +132,6 @@ func NewMessageToByPo(po *po.MessageTo) *MessageTo {
 		ConvID:    po.ConvID,
 		OwnerID:   po.OwnerID,
 		SeqID:     po.SeqID,
-		HasRead:   po.HasRead,
 	}
 }
 
@@ -153,6 +151,5 @@ func (t *MessageTo) ToPo() po.MessageTo {
 		ConvID:    t.ConvID,
 		OwnerID:   t.OwnerID,
 		SeqID:     t.SeqID,
-		HasRead:   t.HasRead,
 	}
 }

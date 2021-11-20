@@ -74,15 +74,6 @@ func (agg *MessageAggregate) ConstructHelperMsgTos(ctx context.Context) []*entit
 		OwnerID:   common.HelperID,
 		SeqID:     msgFrom.SeqID,
 	}
-	if msgFrom.SenderID == common.HelperID {
-		// 客服发的消息
-		agg.MessageTos[0].HasRead = entity.MsgHasNotRead // 游客未读
-		agg.MessageTos[1].HasRead = entity.MsgHasRead    // 客服已读
-	} else {
-		// 游客发的消息
-		agg.MessageTos[0].HasRead = entity.MsgHasRead    // 游客已读
-		agg.MessageTos[1].HasRead = entity.MsgHasNotRead // 客服未读
-	}
 	return agg.MessageTos
 }
 

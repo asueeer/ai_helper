@@ -30,7 +30,6 @@ type MessageTo struct {
 	ConvID    int64 `gorm:"column:conv_id"`    // 会话id
 	OwnerID   int64 `gorm:"column:owner_id"`   // 收件箱所有者id
 	SeqID     int64 `gorm:"column:seq_id"`     // 用于保序的序列号
-	HasRead   int32 `gorm:"column:has_read"`   //  消息是否已读; 1: 未读; 2: 已读
 
 	gorm.Model
 }

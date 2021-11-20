@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/pkg/errors"
+	"log"
 	"sync"
 	"time"
 )
@@ -40,7 +41,7 @@ func (h *Hub) Store(ctx context.Context, cli *Client) error {
 
 	// 2. 将ticket存入redis, 之后根据ticket去hub里找client
 	cache.SAdd(ctx, uKey, wsKey)
-	cache.ExpireAt(ctx, uKey, time.Now().Add(time.Minute*15))
+	cache.ExpireAt(ctx, uKey, time.Now().Add(time.Hour*10))
 	cli.uKey = uKey
 	cli.wsKey = wsKey
 	return nil
@@ -58,4 +59,13 @@ func (h *Hub) Load(key string) *Client {
 		return nil
 	}
 	return cli.(*Client)
+}
+
+func (h *Hub) GetWsKeys(ctx context.Context, uKey string) []string {
+	ss, err := cache.SMembers(ctx, uKey).Result()
+	if err != nil {
+		log.Printf("err: %+v", err)
+		return nil
+	}
+	return ss
 }

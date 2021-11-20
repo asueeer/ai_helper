@@ -6,7 +6,6 @@ import (
 	"ai_helper/biz/domain/entity"
 	"ai_helper/biz/util"
 	"context"
-	"encoding/json"
 	"time"
 )
 
@@ -48,6 +47,7 @@ func (ss *ConversationsLoader) LoadConversations(ctx context.Context, req LoadCo
 	for i := range convRelPos {
 		convEntites[i] = entity.NewConversationEntityByPo(ctx, convPoMap[convRelPos[i].ConvID])
 		convEntites[i].Participants = convRelPos[i].Participants
+		convEntites[i].UnreadCnt = convRelPos[i].UnreadCnt
 	}
 	return convEntites, total, nil
 }
@@ -91,14 +91,7 @@ func (ss *ConversationsLoader) LoadLastMsgs(ctx context.Context, entities []*ent
 		if msg == nil {
 			continue
 		}
-		entities[i].LastMsg = &entity.MessageFrom{
-			ID:        msg.ID,
-			MessageID: msg.MessageID,
-			ConvID:    msg.ConvID,
-			SenderID:  msg.SenderID,
-			SeqID:     msg.SeqID,
-		}
-		err = json.Unmarshal(msg.Content, &entities[i].LastMsg.Content)
+		entities[i].LastMsg, err = entity.NewMessageFromByPo(msg)
 		if err != nil {
 			return err
 		}
@@ -112,4 +105,8 @@ func (ss *ConversationsLoader) Cursor(ctx context.Context, entities []*entity.Co
 		cursor = util.MaxInt64(entities[i].Timestamp.Unix()*1000, cursor)
 	}
 	return cursor
+}
+
+func (ss *ConversationsLoader) LoadUnreadCnt(ctx context.Context, entities []*entity.Conversation) error {
+	return nil
 }

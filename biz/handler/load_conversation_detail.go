@@ -24,5 +24,9 @@ func LoadConversationDetail(c *gin.Context) {
 		common.WriteError(c, err)
 		return
 	}
+	ctxCopy := c.Copy()
+	go func() {
+		ss.ClearUnreadCnt(ctxCopy, req.ConvID)
+	}()
 	c.JSON(200, resp)
 }

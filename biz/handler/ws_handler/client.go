@@ -74,3 +74,7 @@ func handleMessage(ctx context.Context, message []byte) []byte {
 	}
 	return message
 }
+
+func (c *Client) WriteMessage(ctx context.Context, msg []byte) error {
+	return c.conn.WriteMessage(websocket.TextMessage, msg)
+}

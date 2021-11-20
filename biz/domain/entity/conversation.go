@@ -30,6 +30,7 @@ type Conversation struct {
 	Participants []int64      `json:"participants"`     // 会话参与者
 	Timestamp    time.Time    `json:"timestamp"`        // 会话时间戳
 	SeqID        int64        `json:"seq_id"`           // 序列号, 用于保序
+	UnreadCnt    int          `json:"unread_cnt"`       // 未读消息数
 }
 
 func (c *Conversation) ToPo() po.Conversation {
@@ -124,7 +125,7 @@ func (c *Conversation) ToVo() *vo.Conversation {
 	return &vo.Conversation{
 		ConvID:    cast.ToString(c.ConvID),
 		Type:      c.Type,
-		UnRead:    0,
+		UnRead:    cast.ToInt32(c.UnreadCnt),
 		Timestamp: util.Sec2Mirco(c.Timestamp.Unix()),
 	}
 }

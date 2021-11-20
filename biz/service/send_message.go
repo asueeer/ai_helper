@@ -13,6 +13,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
 	"github.com/spf13/cast"
+	"log"
 	"time"
 )
 
@@ -22,31 +23,31 @@ type SendMessageService struct {
 // 当前用户是否有权限发送消息？
 func (ss *SendMessageService) checkParams(ctx context.Context, req *model.SendMessageRequest) (err error) {
 	var convAgg *aggregate.ConversationAggregate
-	{
-		// 1. 先看有没有这个会话
-		convAgg, err = aggregate.GetConvAggByID(ctx, cast.ToInt64(req.ConvID))
-		if err != nil {
-			return err
-		}
-		if convAgg == nil {
-			return errors.New("不存在的会话id")
+	// 1. 先看有没有这个会话
+	convAgg, err = aggregate.GetConvAggByID(ctx, cast.ToInt64(req.ConvID))
+	if err != nil {
+		return err
+	}
+	if convAgg == nil {
+		return errors.New("不存在的会话id")
+	}
+
+	// 2. 再看用户具不具有发送消息的资格
+	hasAuth := false
+	user := common.GetUser(ctx)
+	for i := range convAgg.ConvRels {
+		convRel := convAgg.ConvRels[i]
+		log.Printf("convRel: %+v", convRel)
+		log.Printf("user:  %+v", user)
+		if convRel.UserID == user.UserID {
+			hasAuth = true
 		}
 	}
-	{
-		// 2. 再看用户具不具有发送消息的资格
-		hasAuth := false
-		user := common.GetUser(ctx)
-		for i := range convAgg.ConvRels {
-			convRel := convAgg.ConvRels[i]
-			if convRel.UserID == user.UserID {
-				hasAuth = true
-			}
-		}
-		// 还有一种情况没有考虑, 如果当前用户是客服, 则无需进行这种发送消息的权限校验
-		if !hasAuth {
-			return errors.New("似乎没有这个会话的权限????")
-		}
+	// 还有一种情况没有考虑, 如果当前用户是客服, 则无需进行这种发送消息的权限校验
+	if !hasAuth {
+		return errors.New("似乎没有这个会话的权限????")
 	}
+
 	return nil
 }
 
@@ -115,6 +116,9 @@ func (ss *SendMessageService) ExecuteCallback(ctx context.Context, req *model.Se
 		return err
 	}
 	if err := convRepo.UpdateTimestamp(ctx, cast.ToInt64(req.ConvID), msg.CreateAt); err != nil {
+		return err
+	}
+	if err := convRepo.IncrUnreadCnt(ctx, cast.ToInt64(req.ConvID), msg.ReceiverID); err != nil {
 		return err
 	}
 	return nil

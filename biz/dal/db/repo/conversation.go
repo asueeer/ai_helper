@@ -60,11 +60,13 @@ func (repo *ConversationRepo) GetConvPo(ctx context.Context, req GetConvPoReques
 }
 
 type GetUserConvRelPosRequest struct {
-	ConvID    int64 `json:"conv_id"`
-	UserID    int64 `json:"user_id"`
-	Limit     int64 `json:"limit"`
-	SeqIDFrom int64 `json:"seq_id_from"`
-	SeqIDTo   int64 `json:"seq_id_to"`
+	ConvID    int64   `json:"conv_id"`
+	ConvIDs   []int64 `json:"conv_ids"`
+	UserID    int64   `json:"user_id"`
+	Limit     int64   `json:"limit"`
+	Offset    int64   `json:"offset"`
+	SeqIDFrom int64   `json:"seq_id_from"`
+	SeqIDTo   int64   `json:"seq_id_to"`
 }
 
 func (repo *ConversationRepo) GetUserConvRelPos(ctx context.Context, req GetUserConvRelPosRequest) (pos []*po.UserConvRel, total int64, err error) {
@@ -83,13 +85,17 @@ func (repo *ConversationRepo) GetUserConvRelPos(ctx context.Context, req GetUser
 	if req.SeqIDFrom != 0 {
 		sql = sql.Where("conversation.timestamp > ?", req.SeqIDFrom)
 	}
+	if len(req.ConvIDs) != 0 {
+		sql = sql.Where("user_conv_rel.conv_id in (?)", req.ConvIDs)
+	}
 	sql = sql.Order("conversation.timestamp desc")
-	sql = sql.Limit(req.Limit)
-	err = sql.Find(&pos).Error
+	err = sql.Count(&total).Error
 	if err != nil {
 		return nil, 0, err
 	}
-	err = sql.Count(&total).Error
+	sql = sql.Offset(req.Offset)
+	sql = sql.Limit(req.Limit)
+	err = sql.Find(&pos).Error
 	if err != nil {
 		return nil, 0, err
 	}
@@ -130,5 +136,19 @@ func (repo *ConversationRepo) UpdateSeqID(ctx context.Context, convID int64, seq
 func (repo *ConversationRepo) UpdateTimestamp(ctx context.Context, convID int64, timestamp time.Time) error {
 	sql := repo.db.Model(po.Conversation{})
 	sql = sql.Where("conv_id = ?", convID).UpdateColumn("timestamp", timestamp)
+	return sql.Error
+}
+
+func (repo *ConversationRepo) IncrUnreadCnt(ctx context.Context, convID int64, userID int64) error {
+	sql := repo.db.Model(po.UserConvRel{})
+	sql = sql.Where("conv_id = ?", convID).Where("user_id = ?", userID)
+	sql = sql.UpdateColumn("unread_cnt", gorm.Expr("unread_cnt + 1"))
+	return sql.Error
+}
+
+func (repo *ConversationRepo) ClearUnreadCnt(ctx context.Context, convID int64, userID int64) error {
+	sql := repo.db.Model(po.UserConvRel{})
+	sql = sql.Where("conv_id = ?", convID).Where("user_id = ?", userID)
+	sql = sql.UpdateColumn("unread_cnt", 0)
 	return sql.Error
 }

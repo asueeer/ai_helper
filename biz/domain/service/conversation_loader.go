@@ -39,6 +39,7 @@ func (ss *ConversationLoader) GetConversation(ctx context.Context, req GetConver
 	if convEntity == nil {
 		return nil, errors.New("未查找到相关会话")
 	}
+	resp.ConvAgg = convEntity
 	// 获取消息列表
 	msgResp, err := convEntity.GetMessages(ctx, entity.GetMessagesRequest{
 		Limit:     req.Limit,
@@ -54,7 +55,6 @@ func (ss *ConversationLoader) GetConversation(ctx context.Context, req GetConver
 	if err != nil {
 		return nil, err
 	}
-	resp.ConvAgg = convEntity
 	return resp, err
 }
 

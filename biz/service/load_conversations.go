@@ -36,7 +36,9 @@ func (ss *LoadConversationsService) Execute(ctx context.Context, req *model.Load
 	if err != nil {
 		return nil, common.NewBizErr(common.BizErrCode, "装载会话里的消息时出错", err)
 	}
-
+	if err != nil {
+		return nil, common.NewBizErr(common.BizErrCode, "加载未读消息数时出错", err)
+	}
 	// 更新接下来拉取会话时，需要给后端传的cursor
 	cursor := convsLoader.Cursor(ctx, convEntities)
 	resp := &model.LoadConversationsResponse{

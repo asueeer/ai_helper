@@ -2,6 +2,7 @@ package service
 
 import (
 	"ai_helper/biz/common"
+	"ai_helper/biz/dal/db/repo"
 	domainService "ai_helper/biz/domain/service"
 	"ai_helper/biz/model"
 	"ai_helper/biz/model/vo"
@@ -9,6 +10,7 @@ import (
 	"context"
 	"github.com/pkg/errors"
 	"github.com/spf13/cast"
+	"log"
 	"math"
 	"time"
 )
@@ -156,4 +158,13 @@ func (ss *LoadConversationDetailService) GetViewerID(ctx context.Context, req *m
 	}
 	user := common.GetUser(ctx)
 	return user.UserID, nil
+}
+
+func (ss *LoadConversationDetailService) ClearUnreadCnt(ctx context.Context, convID string) {
+	convRepo := repo.NewConversationRepo()
+	user := common.GetUser(ctx)
+	err := convRepo.ClearUnreadCnt(ctx, cast.ToInt64(convID), user.UserID)
+	if err != nil {
+		log.Printf("err: %+v", err)
+	}
 }

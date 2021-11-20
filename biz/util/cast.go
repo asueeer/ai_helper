@@ -29,5 +29,5 @@ func Sec2Mirco(sec int64) (ms int64) {
 }
 
 func NowUnixMicro() int64 {
-	return time.Now().UnixMicro()
+	return time.Now().Unix() * 1000
 }

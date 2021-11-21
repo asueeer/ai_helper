@@ -10,6 +10,11 @@ type LoadConversationDetailRequest struct {
 	Direction int32  `form:"direction" json:"direction"`                // 拉取方向; 枚举值 +1: 由现在到未来; -1: 由现在到过去 （默认为-1）
 }
 
+type WsMessageLoadConvDetailRequest struct {
+	Type int                           `json:"type"`
+	Msg  LoadConversationDetailRequest `json:"msg"`
+}
+
 type LoadConversationDetailData struct {
 	Messages  []*vo.Message `json:"messages"`   // 消息列表
 	HasMore   bool          `json:"has_more"`   // 是否包含更多会话

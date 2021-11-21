@@ -34,10 +34,14 @@ func (ss *LoadConversationDetailService) checkParams(ctx context.Context, req *m
 	if req.Direction == 0 {
 		req.Direction = -1
 	}
+	if cast.ToInt(req.ConvID) == 0 {
+		return errors.New("必须指定一个conv_id")
+	}
 	return nil
 }
 
 func (ss *LoadConversationDetailService) checkAuth(ctx context.Context, convID int64) error {
+
 	return nil
 }
 

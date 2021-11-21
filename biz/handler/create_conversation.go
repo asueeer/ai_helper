@@ -5,13 +5,14 @@ import (
 	"ai_helper/biz/model"
 	"ai_helper/biz/service"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 )
 
 // CreateConversation [Post] /im/create_conversation
 func CreateConversation(c *gin.Context) {
 	// 创建会话
 	req := &model.CreateConversationRequest{}
-	if err := c.ShouldBind(req); err != nil {
+	if err := c.ShouldBindBodyWith(req, binding.JSON); err != nil {
 		c.JSON(400, err.Error())
 		return
 	}

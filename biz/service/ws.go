@@ -11,10 +11,9 @@ type WsService struct {
 }
 
 func (ss *WsService) Wrap(err error) []byte {
-	bizErr := common.NewBizErr(common.BizErrCode, "解析json出错了", err)
+	bizErr := common.NewBizErr(common.BizErrCode, "", err)
 	return []byte(bizErr.Error())
 }
-
 func (ss *WsService) WsLoadConv(ctx context.Context, msgType int, msg []byte) []byte {
 	convService := LoadConversationDetailService{}
 	var req *model.LoadConversationDetailRequest

@@ -49,7 +49,7 @@ func SendMessageCallBack(c *gin.Context) {
 			}
 			msgNotify := model.WsMessageResponse{
 				Type: common.WsNewMsg,
-				Msg:  msg.ConvID,
+				Msg:  msg.ToVo(),
 			}
 			j, err := json.Marshal(msgNotify)
 			if err != nil {

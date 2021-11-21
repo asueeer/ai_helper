@@ -5,12 +5,13 @@ import (
 	"ai_helper/biz/model"
 	"ai_helper/biz/service"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 )
 
 // RegisterVisitor [Post] /get_token
 func RegisterVisitor(c *gin.Context) {
 	req := &model.RegisterVisitorRequest{}
-	if err := c.ShouldBind(req); err != nil {
+	if err := c.ShouldBindBodyWith(req, binding.JSON); err != nil {
 		c.JSON(400, err.Error())
 		return
 	}

@@ -100,6 +100,7 @@ func (f *MessageFrom) ToPo() (*po.MessageFrom, error) {
 func (f *MessageFrom) ToVo() *vo.Message {
 	msgVo := &vo.Message{
 		MessageID:  cast.ToString(f.MessageID),
+		ConvID:     cast.ToString(f.ConvID),
 		SenderID:   cast.ToString(f.SenderID),
 		ReceiverID: cast.ToString(f.ReceiverID),
 		Content: vo.MsgContent{

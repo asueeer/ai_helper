@@ -51,5 +51,6 @@ func (ss *CreateConversationService) CreateHelperConv(ctx context.Context) (resp
 			ConvID: cast.ToString(entity.ConvID),
 		},
 	}
+	resp.Data.IsNew = true
 	return resp, nil
 }

@@ -3,7 +3,9 @@ package ws_handler
 import (
 	"ai_helper/biz/config"
 	"ai_helper/biz/dal/cache"
+	"ai_helper/biz/model"
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/pkg/errors"
 	"log"
@@ -68,4 +70,25 @@ func (h *Hub) GetWsKeys(ctx context.Context, uKey string) []string {
 		return nil
 	}
 	return ss
+}
+
+func (h *Hub) BatchSendMsgs(ctx context.Context, receiverID int64, msgNotify model.WsMessageResponse) {
+	wsKeys := h.GetWsKeys(ctx, fmt.Sprintf("ws_%d", receiverID))
+	if len(wsKeys) == 0 {
+		return
+	}
+	for i := range wsKeys {
+		cli := h.Load(wsKeys[i])
+		if cli == nil {
+			continue
+		}
+		j, err := json.Marshal(msgNotify)
+		if err != nil {
+			log.Printf("SendMessageCallBack fail, err: %+v", err)
+		}
+		err = cli.WriteMessage(ctx, j)
+		if err != nil {
+			log.Printf("cli.WriteMessage fail, err: %+v", err)
+		}
+	}
 }

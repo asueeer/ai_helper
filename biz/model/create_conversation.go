@@ -7,6 +7,7 @@ type CreateConversationRequest struct {
 
 type CreateConversationData struct {
 	ConvID string `json:"conv_id"`
+	IsNew  bool   `json:"is_new"`
 }
 
 type CreateConversationResponse struct {

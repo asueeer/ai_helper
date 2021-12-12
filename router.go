@@ -16,6 +16,7 @@ func register(r *gin.Engine) {
 			map[string]bool{
 				"/api/ping":      true,
 				"/api/get_token": true,
+				"/api/login":     true,
 			},
 		),
 	)
@@ -25,6 +26,7 @@ func register(r *gin.Engine) {
 	// 用户中心
 	r.GET("/api/profile/me", handler.ProfileMe)
 	r.POST("/api/get_token", handler.RegisterVisitor)
+	r.POST("/api/login", handler.Login)
 
 	// 会话&消息
 	r.POST("/api/im/create_conversation", handler.CreateConversation)

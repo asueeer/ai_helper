@@ -8,7 +8,7 @@ func main() {
 	Init()
 	r := gin.Default()
 	register(r)
-	debug := false
+	debug := true
 	var err error
 	if debug {
 		err = r.Run("0.0.0.0:1988")

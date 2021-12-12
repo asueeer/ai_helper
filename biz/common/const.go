@@ -15,14 +15,6 @@ const (
 	LoginFailErrCode = 20010 // 用户未登陆
 )
 
-//
-const (
-	RandomHeadUrlPrefix     = "default_head_url_"
-	RandomNicknamePrefix    = "lucky_name_"
-	RandomLuckyNumberPrefix = "lucky_number_"
-	RandomDelimiterPrefix   = "random_delimiter_"
-)
-
 // 时间长度
 const (
 	Day     = time.Hour * 24

@@ -36,5 +36,6 @@ func register(r *gin.Engine) {
 	r.GET("/api/im/ws", ws_handler.WSHandler)
 
 	// v2-会话工单需求
-	r.POST("/im/accept_conversation", handler.AcceptConversation)
+	r.POST("/api/im/accept_conversation", handler.AcceptConversation)
+	r.POST("/api/im/end_conversation", handler.EndConversation)
 }

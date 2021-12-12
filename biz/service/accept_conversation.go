@@ -18,6 +18,7 @@ func (AcceptConversationService) Execute(ctx context.Context, req *model.AcceptC
 	// todo 权限校验
 	convRepo := repo.NewConversationRepo()
 	user := common.GetUser(ctx)
+	// fixme 理论上应该做一个校验, 看有没有被更改
 	err := convRepo.UpdateConvStatus(ctx, repo.UpdateConvStatusRequest{
 		ConvID:    cast.ToInt64(req.ConvID),
 		Status:    "chatting",
@@ -25,9 +26,9 @@ func (AcceptConversationService) Execute(ctx context.Context, req *model.AcceptC
 		Acceptor:  cast.ToInt64(user.UserID),
 	})
 	if err != nil {
-		return &model.AcceptConversationResponse{
-			Meta: common.MetaOk,
-		}, nil
+		return nil, common.NewBizErr(common.BizErrCode, "accept conv fail", err)
 	}
-	return nil, common.NewBizErr(common.BizErrCode, "accept conv fail", err)
+	return &model.AcceptConversationResponse{
+		Meta: common.MetaOk,
+	}, nil
 }

@@ -24,9 +24,9 @@ func (EndConversationService) Execute(ctx context.Context, req *model.EndConvers
 		Acceptor:  0,
 	})
 	if err != nil {
-		return &model.EndConversationResponse{
-			Meta: common.MetaOk,
-		}, nil
+		return nil, common.NewBizErr(common.BizErrCode, "end conv fail", err)
 	}
-	return nil, common.NewBizErr(common.BizErrCode, "end conv fail", err)
+	return &model.EndConversationResponse{
+		Meta: common.MetaOk,
+	}, nil
 }

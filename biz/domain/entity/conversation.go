@@ -24,6 +24,7 @@ type Conversation struct {
 	ConvID       int64        `json:"conv_id"`          // 会话id, 会话的唯一标识
 	Type         string       `json:"type"`             // 会话类型
 	Creator      int64        `json:"creator"`          // 创建者id
+	Acceptor     int64        `json:"acceptor"`         // 接收者id
 	Status       string       `json:"status,omitempty"` // 状态
 	LastMsgID    int64        `json:"last_msg_id"`      // 最近一条消息的msg_id
 	LastMsg      *MessageFrom `json:"last_msg"`         // 最新的一条消息
@@ -78,6 +79,7 @@ func NewConversationEntityByPo(ctx context.Context, convPo *po.Conversation) *Co
 		Status:    convPo.Status,
 		Timestamp: convPo.Timestamp,
 		LastMsgID: convPo.LastMsgID,
+		Acceptor:  convPo.Acceptor,
 	}
 }
 
@@ -128,6 +130,17 @@ func (c *Conversation) ToVo() *vo.Conversation {
 		UnRead:    cast.ToInt32(c.UnreadCnt),
 		Timestamp: util.Sec2Mirco(c.Timestamp.Unix()),
 	}
+}
+
+func (c *Conversation) ReOpen(ctx context.Context) error {
+	// 返回前更改会话单的状态
+	convRepo := repo.NewConversationRepo()
+	err := convRepo.UpdateConvStatus(ctx, repo.UpdateConvStatusRequest{
+		ConvID:    c.ConvID,
+		Status:    "waiting",
+		PreStatus: "end",
+	})
+	return err
 }
 
 func GetMessageFroms(ctx context.Context, messageTos []*po.MessageTo) ([]*po.MessageFrom, error) {

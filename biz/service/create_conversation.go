@@ -2,7 +2,6 @@ package service
 
 import (
 	"ai_helper/biz/common"
-	"ai_helper/biz/dal/db/repo"
 	domainService "ai_helper/biz/domain/service"
 	"ai_helper/biz/model"
 	"context"
@@ -31,19 +30,14 @@ func (ss *CreateConversationService) CreateHelperConv(ctx context.Context) (resp
 		if err != nil && err != gorm.ErrRecordNotFound {
 			return nil, common.NewBizErr(common.BizErrCode, err.Error(), err)
 		}
-		if err != nil {
-			return nil, common.NewBizErr(common.BizErrCode, err.Error(), err)
+		if convEntity != nil {
+
 		}
 		if convEntity != nil {
-			// 返回前更改会话单的状态
-			convRepo := repo.NewConversationRepo()
-			err = convRepo.UpdateConvStatus(ctx, repo.UpdateConvStatusRequest{
-				ConvID:    convEntity.ConvID,
-				Status:    "waiting",
-				PreStatus: "end",
-			})
-		}
-		if convEntity != nil {
+			err = convEntity.ReOpen(ctx)
+			if err != nil {
+				return nil, common.NewBizErr(common.BizErrCode, err.Error(), err)
+			}
 			return &model.CreateConversationResponse{
 				Meta: common.MetaOk,
 				Data: model.CreateConversationData{

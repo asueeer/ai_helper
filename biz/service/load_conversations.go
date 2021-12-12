@@ -82,9 +82,8 @@ func (ss *LoadConversationsService) ToConvVos(ctx context.Context, convEntities 
 func (ss *LoadConversationsService) GetLoadConvReq(ctx context.Context, req *model.LoadConversationsRequest) domainService.LoadConversationsRequest {
 	user := common.GetUser(ctx)
 	loadConvReq := domainService.LoadConversationsRequest{
-		UserID:   common.HelperID, // 会话小助手id
-		Limit:    req.Limit,
-		Acceptor: user.UserID, // 客服接收者id
+		UserID: common.HelperID, // 会话小助手id
+		Limit:  req.Limit,
 	}
 	if req.Direction == -1 {
 		loadConvReq.SeqIDTo = cast.ToInt64(req.Cursor)
@@ -99,6 +98,9 @@ func (ss *LoadConversationsService) GetLoadConvReq(ctx context.Context, req *mod
 		loadConvReq.Status = ""
 	} else {
 		loadConvReq.Status = req.Status
+	}
+	if loadConvReq.Status == "chatting" {
+		loadConvReq.Acceptor = user.UserID
 	}
 	return loadConvReq
 }

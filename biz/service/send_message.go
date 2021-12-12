@@ -43,6 +43,9 @@ func (ss *SendMessageService) checkParams(ctx context.Context, req *model.SendMe
 			hasAuth = true
 		}
 	}
+	if convAgg.Conv.Acceptor == user.UserID {
+		hasAuth = true
+	}
 	// 还有一种情况没有考虑, 如果当前用户是客服, 则无需进行这种发送消息的权限校验
 	if !hasAuth {
 		return errors.New("似乎没有这个会话的权限????")

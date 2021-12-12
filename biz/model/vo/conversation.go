@@ -8,6 +8,7 @@ type Participant struct {
 type Conversation struct {
 	ConvID       string        `json:"conv_id"`      // 会话id
 	Type         string        `json:"type"`         // 会话类型
+	Status       string        `json:"status"`       // 会话状态
 	UnRead       int32         `json:"un_read"`      // 未读消息数
 	LastMsg      *Message      `json:"last_msg"`     // 最近一条消息
 	Participants []Participant `json:"participants"` // 参与者

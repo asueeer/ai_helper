@@ -3,10 +3,10 @@ package model
 import "ai_helper/biz/model/vo"
 
 type LoadConversationsRequest struct {
-	Limit     int64  `form:"limit" json:"limit"`
-	Cursor    string `form:"cursor" json:"cursor"`       // 相当于是offset
-	Direction int32  `form:"direction" json:"direction"` // 拉取的方向; -1是由现在到过去; +1是由现在到未来
-	Status    string `form:"status" json:"status"`       // 枚举值; "chatting": 聊天中; "waiting": 等待; "end": 结束; "all": 查询全部. （默认为"chatting"）
+	Limit     int64    `form:"limit" json:"limit"`
+	Cursor    string   `form:"cursor" json:"cursor"`       // 相当于是offset
+	Direction int32    `form:"direction" json:"direction"` // 拉取的方向; -1是由现在到过去; +1是由现在到未来
+	Status    []string `form:"status" json:"status"`       // 枚举值; "chatting": 聊天中; "waiting": 等待; "end": 结束; "all": 查询全部. （默认为"chatting"）
 }
 
 type LoadConversationData struct {

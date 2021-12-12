@@ -129,6 +129,7 @@ func (c *Conversation) ToVo() *vo.Conversation {
 		Type:      c.Type,
 		UnRead:    cast.ToInt32(c.UnreadCnt),
 		Timestamp: util.Sec2Mirco(c.Timestamp.Unix()),
+		Status:    c.Status,
 	}
 }
 

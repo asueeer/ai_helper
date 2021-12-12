@@ -60,15 +60,15 @@ func (repo *ConversationRepo) GetConvPo(ctx context.Context, req GetConvPoReques
 }
 
 type GetUserConvRelPosRequest struct {
-	ConvID    int64   `json:"conv_id"`
-	ConvIDs   []int64 `json:"conv_ids"`
-	UserID    int64   `json:"user_id"`
-	Limit     int64   `json:"limit"`
-	Offset    int64   `json:"offset"`
-	SeqIDFrom int64   `json:"seq_id_from"`
-	SeqIDTo   int64   `json:"seq_id_to"`
-	Status    string  `json:"status"`
-	Acceptor  int64   `json:"acceptor"`
+	ConvID    int64    `json:"conv_id"`
+	ConvIDs   []int64  `json:"conv_ids"`
+	UserID    int64    `json:"user_id"`
+	Limit     int64    `json:"limit"`
+	Offset    int64    `json:"offset"`
+	SeqIDFrom int64    `json:"seq_id_from"`
+	SeqIDTo   int64    `json:"seq_id_to"`
+	Status    []string `json:"status"`
+	Acceptor  int64    `json:"acceptor"`
 }
 
 func (repo *ConversationRepo) GetUserConvRelPos(ctx context.Context, req GetUserConvRelPosRequest) (pos []*po.UserConvRel, total int64, err error) {
@@ -90,11 +90,11 @@ func (repo *ConversationRepo) GetUserConvRelPos(ctx context.Context, req GetUser
 	if len(req.ConvIDs) != 0 {
 		sql = sql.Where("user_conv_rel.conv_id in (?)", req.ConvIDs)
 	}
-	if req.Status != "" {
-		sql = sql.Where("conversation.status = ?", req.Status)
+	if len(req.Status) != 0 {
+		sql = sql.Where("conversation.status in (?)", req.Status)
 	}
 	if req.Acceptor != 0 {
-		sql = sql.Where("conversation.acceptor = ?", req.Acceptor)
+		sql = sql.Where("conversation.acceptor in (0, ?)", req.Acceptor)
 	}
 
 	sql = sql.Order("conversation.timestamp desc")

@@ -31,15 +31,17 @@ func (ss *CreateConversationService) CreateHelperConv(ctx context.Context) (resp
 		if err != nil && err != gorm.ErrRecordNotFound {
 			return nil, common.NewBizErr(common.BizErrCode, err.Error(), err)
 		}
-		// 返回前更改会话单的状态
-		convRepo := repo.NewConversationRepo()
-		err = convRepo.UpdateConvStatus(ctx, repo.UpdateConvStatusRequest{
-			ConvID:    convEntity.ConvID,
-			Status:    "waiting",
-			PreStatus: "end",
-		})
 		if err != nil {
 			return nil, common.NewBizErr(common.BizErrCode, err.Error(), err)
+		}
+		if convEntity != nil {
+			// 返回前更改会话单的状态
+			convRepo := repo.NewConversationRepo()
+			err = convRepo.UpdateConvStatus(ctx, repo.UpdateConvStatusRequest{
+				ConvID:    convEntity.ConvID,
+				Status:    "waiting",
+				PreStatus: "end",
+			})
 		}
 		if convEntity != nil {
 			return &model.CreateConversationResponse{

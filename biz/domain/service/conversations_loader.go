@@ -13,10 +13,12 @@ type ConversationsLoader struct {
 }
 
 type LoadConversationsRequest struct {
-	UserID    int64 `json:"user_id"`
-	Limit     int64 `json:"limit"`
-	SeqIDFrom int64 `json:"seq_id_from"`
-	SeqIDTo   int64 `json:"seq_id_to"`
+	UserID    int64  `json:"user_id"`
+	Limit     int64  `json:"limit"`
+	SeqIDFrom int64  `json:"seq_id_from"`
+	SeqIDTo   int64  `json:"seq_id_to"`
+	Status    string `json:"status"`
+	Acceptor  int64  `json:"acceptor"`
 }
 
 // LoadConversations 加载会话列表
@@ -28,6 +30,8 @@ func (ss *ConversationsLoader) LoadConversations(ctx context.Context, req LoadCo
 		Limit:     req.Limit,
 		SeqIDFrom: req.SeqIDFrom,
 		SeqIDTo:   req.SeqIDTo,
+		Status:    req.Status,
+		Acceptor:  req.Acceptor,
 	})
 	if err != nil {
 		return nil, 0, err

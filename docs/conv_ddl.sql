@@ -5,6 +5,7 @@ create table conversation
     conv_id     bigint unique          not null,
     type        varchar(64) default '' not null,
     creator     bigint                 not null,
+    acceptor    bigint      default 0  not null,
     status      varchar(64) default '' not null,
     timestamp   timestamp              not null,
     seq_id      bigint      default 0  not null,
@@ -24,6 +25,8 @@ comment
 on column "conversation".type is '会话类型; 枚举值: "helper"-客服, "chat"-普通会话, "group"-群聊';
 comment
 on column "conversation".creator is '会话创建者';
+comment
+on column "conversation".acceptor is '会话接收者';
 comment
 on column "conversation".status is '会话状态';
 comment
@@ -76,3 +79,4 @@ on column "user_conv_rel".unread_cnt is '未读消息数';
 
 comment
 on column "user_conv_rel".participants is '会话参与者';
+

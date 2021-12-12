@@ -47,6 +47,8 @@ struct LoadConversationsRequest{
     2: i64 cursor; // 相当于是offset
 
     3: i32 direction; // 拉取的方向; 枚举值 +1: 由现在到未来; -1: 由现在到过去; （默认为-1）
+
+    4: string status; // 枚举值; "chatting": 聊天中; "waiting": 等待; "end": 结束; "all": 查询全部. （默认为chatting）
 }
 
 struct LoadConversationsData{
@@ -115,9 +117,29 @@ struct Meta{
 }
 
 
+struct AcceptConversationRequest {
+    1: string conv_id; // 会话id
+}
+
+struct AcceptConversationResponse {
+    1: Meta meta;
+}
+
+struct EndConversationRequest{
+    1: string conv_id;
+}
+
+struct EndConversationResponse{
+    1: Meta meta;
+}
+
 service ImService{
     CreateConversationResponse CreateConversation(1: CreateConversationRequest req) (api.post="/im/create_conversation"); // 创建会话
     LoadConversationDetailResponse LoadConversation(1: LoadConversationDetailRequest req) (api.post="/im/load_conversation_detail"); // 加载会话详情
     LoadConversationsResponse LoadConversations(1: LoadConversationsRequest req) (api.post="/im/load_conversations"); // 加载会话列表
     SendMessageResponse SendMessage(1: SendMessageRequest req) (api.post="im/send_message"); // 发送消息
+
+    // 二期-增加工单
+    AcceptConversationResponse AcceptConversation(1: AcceptConversationRequest req) (api.post="/im/accept_conversation"); // 客服人员接收会话
+    EndConversationResponse EndConversation(1: EndConversationRequest req) (api.post="im/end_conversation"); // 结束会话工单
 }

@@ -67,6 +67,8 @@ type GetUserConvRelPosRequest struct {
 	Offset    int64   `json:"offset"`
 	SeqIDFrom int64   `json:"seq_id_from"`
 	SeqIDTo   int64   `json:"seq_id_to"`
+	Status    string  `json:"status"`
+	Acceptor  int64   `json:"acceptor"`
 }
 
 func (repo *ConversationRepo) GetUserConvRelPos(ctx context.Context, req GetUserConvRelPosRequest) (pos []*po.UserConvRel, total int64, err error) {
@@ -88,6 +90,13 @@ func (repo *ConversationRepo) GetUserConvRelPos(ctx context.Context, req GetUser
 	if len(req.ConvIDs) != 0 {
 		sql = sql.Where("user_conv_rel.conv_id in (?)", req.ConvIDs)
 	}
+	if req.Status != "" {
+		sql = sql.Where("conversation.status = ?", req.Status)
+	}
+	if req.Acceptor != 0 {
+		sql = sql.Where("conversation.acceptor = ?", req.Acceptor)
+	}
+
 	sql = sql.Order("conversation.timestamp desc")
 	err = sql.Count(&total).Error
 	if err != nil {
@@ -150,5 +159,25 @@ func (repo *ConversationRepo) ClearUnreadCnt(ctx context.Context, convID int64, 
 	sql := repo.db.Model(po.UserConvRel{})
 	sql = sql.Where("conv_id = ?", convID).Where("user_id = ?", userID)
 	sql = sql.UpdateColumn("unread_cnt", 0)
+	return sql.Error
+}
+
+type UpdateConvStatusRequest struct {
+	ConvID    int64
+	Status    string
+	PreStatus string
+	Acceptor  int64
+}
+
+func (repo *ConversationRepo) UpdateConvStatus(ctx context.Context, req UpdateConvStatusRequest) error {
+	sql := repo.db.Model(po.Conversation{})
+	sql = sql.Where("conv_id = ?", req.ConvID)
+	if req.PreStatus != "" {
+		sql = sql.Where("status = ?", req.PreStatus)
+	}
+	sql = sql.Updates(map[string]interface{}{
+		"status":   req.Status,
+		"acceptor": req.Acceptor,
+	})
 	return sql.Error
 }

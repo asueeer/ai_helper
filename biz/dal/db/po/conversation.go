@@ -11,6 +11,7 @@ type Conversation struct {
 	ConvID    int64     `gorm:"column:conv_id"`     // 会话id
 	Type      string    `gorm:"column:type"`        // 会话类型
 	Creator   int64     `gorm:"column:creator"`     // 创建人id
+	Acceptor  int64     `gorm:"column:acceptor"`    // 接收者id
 	Status    string    `gorm:"column:status"`      // 会话状态
 	LastMsgID int64     `gorm:"column:last_msg_id"` // 最近一条消息的msg_id
 	Timestamp time.Time `gorm:"timestamp"`          // 时间戳

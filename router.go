@@ -35,7 +35,7 @@ func register(r *gin.Engine) {
 	r.POST("/api/im/load_conversations", handler.LoadConversations)
 
 	// 长连接
-	r.GET("/ws", ws_handler.WSHandler)
+	r.GET("/api/im/ws", ws_handler.WSHandler)
 
 	// v2-会话工单需求
 	r.POST("/api/im/accept_conversation", handler.AcceptConversation)

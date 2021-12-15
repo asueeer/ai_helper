@@ -3,6 +3,7 @@ package config
 import "github.com/bwmarrin/snowflake"
 
 var (
+	WorkID      = int64(1)
 	iDGenerator *snowflake.Node
 )
 

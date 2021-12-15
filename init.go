@@ -7,8 +7,5 @@ import (
 
 func Init() {
 	config.SetDebugMode(true)
-	{
-		db.InitDB()
-		config.InitKVConfig()
-	}
+	db.InitDB()
 }

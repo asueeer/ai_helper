@@ -21,8 +21,8 @@ func (AcceptConversationService) Execute(ctx context.Context, req *model.AcceptC
 	// fixme 理论上应该做一个校验, 看有没有被更改
 	err := convRepo.UpdateConvStatus(ctx, repo.UpdateConvStatusRequest{
 		ConvID:    cast.ToInt64(req.ConvID),
-		Status:    "chatting",
-		PreStatus: "waiting",
+		Status:    common.HelperConvStatusChatting,
+		PreStatus: common.HelperConvStatusWaiting,
 		Acceptor:  cast.ToInt64(user.UserID),
 	})
 	if err != nil {

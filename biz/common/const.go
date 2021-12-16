@@ -27,9 +27,9 @@ const (
 const (
 	HelperConversationType = "helper" // 客服会话类型
 
-	HelperConvStatusWaiting  = "waiting"  // 客服会话状态-等待
+	HelperConvStatusWaiting  = "roboting" // 客服会话状态-等待
 	HelperConvStatusChatting = "chatting" // 聊天中
-	HelperConvStatusClosed   = "closed"   // 关闭
+	HelperConvStatusEnd      = "end"      // 关闭
 
 	HelperID = 435737 // 客服小助手的用户id
 

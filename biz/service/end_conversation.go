@@ -19,8 +19,8 @@ func (EndConversationService) Execute(ctx context.Context, req *model.EndConvers
 	convRepo := repo.NewConversationRepo()
 	err := convRepo.UpdateConvStatus(ctx, repo.UpdateConvStatusRequest{
 		ConvID:    cast.ToInt64(req.ConvID),
-		Status:    "end",
-		PreStatus: "chatting",
+		Status:    common.HelperConvStatusEnd,
+		PreStatus: common.HelperConvStatusChatting,
 		Acceptor:  0,
 	})
 	if err != nil {

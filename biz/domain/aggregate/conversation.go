@@ -5,10 +5,8 @@ import (
 	"ai_helper/biz/dal/db/po"
 	"ai_helper/biz/dal/db/repo"
 	"ai_helper/biz/domain/entity"
-	"ai_helper/biz/handler/ws_handler"
 	"ai_helper/biz/model"
 	"context"
-	"github.com/spf13/cast"
 )
 
 type ConversationAggregate struct {
@@ -17,15 +15,15 @@ type ConversationAggregate struct {
 	ConvRels []*po.UserConvRel    `json:"conv_rels"`
 }
 
-type NotifyVisitorData struct {
+type NotifyVisitorMsg struct {
 	ConvID int64 `json:"conv_id"`
 }
 
-func (agg ConversationAggregate) NotifyVisitor(ctx context.Context) {
+func (agg ConversationAggregate) GetNotifyVisitor(ctx context.Context) model.WsMessageResponse {
 	// 给在线客服的长连接里发送消息
 	wsMsg := model.WsMessageResponse{
 		Type: 0,
-		Msg: NotifyVisitorData{
+		Msg: NotifyVisitorMsg{
 			ConvID: agg.ConvID,
 		},
 	}
@@ -35,7 +33,7 @@ func (agg ConversationAggregate) NotifyVisitor(ctx context.Context) {
 	if agg.Conv.Status == common.HelperConvStatusRoboting {
 		wsMsg.Type = 104
 	}
-	ws_handler.TheHub.BatchSendMsgs(ctx, cast.ToInt64(agg.Conv.Creator), wsMsg)
+	return wsMsg
 }
 
 func GetConvAggByID(ctx context.Context, convID int64) (*ConversationAggregate, error) {

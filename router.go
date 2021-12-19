@@ -41,5 +41,5 @@ func register(r *gin.Engine) {
 	r.POST("/api/im/accept_conversation", handler.AcceptConversation)
 	r.POST("/api/im/end_conversation", handler.EndConversation)
 
-	r.POST("/api/im/send_message_to_robot", handler.SendMessageToRobot)
+	r.POST("/api/im/send_robot", handler.SendMessageToRobot)
 }

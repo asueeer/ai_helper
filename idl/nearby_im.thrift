@@ -72,6 +72,7 @@ struct Conversation{
     6: Message last_msg;              // 最近的一条消息
     7: string conv_icon;              // 会话头像
     8: string conv_title;             // 会话的title
+    9: string status;                 // 会话单的状态
 }
 
 struct Participant{
@@ -93,6 +94,7 @@ struct LoadConversationDetailData{
     1: list<Message> messages;
     2: bool has_more;  // 是否包含更多会话
     3: i64 new_cursor; // 下一次拉取前, 需要传给后端的时间戳
+    4: string status; // 当前会话的状态
 }
 
 struct LoadConversationDetailResponse{
@@ -133,6 +135,19 @@ struct EndConversationResponse{
     1: Meta meta;
 }
 
+struct SendMessageToRobotRequest {
+    1: string content;    // 消息内容
+    2: i64 timestamp;
+}
+struct SendMessageToRobotResponse {
+    1: SendMessageToRobotData data;
+    2: Meta meta;
+}
+
+struct SendMessageToRobotData{
+    1: String resp_content; // 机器人的回复内容
+}
+
 service ImService{
     CreateConversationResponse CreateConversation(1: CreateConversationRequest req) (api.post="/im/create_conversation"); // 创建会话
     LoadConversationDetailResponse LoadConversation(1: LoadConversationDetailRequest req) (api.post="/im/load_conversation_detail"); // 加载会话详情
@@ -142,4 +157,8 @@ service ImService{
     // 二期-增加工单
     AcceptConversationResponse AcceptConversation(1: AcceptConversationRequest req) (api.post="/im/accept_conversation"); // 客服人员接收会话
     EndConversationResponse EndConversation(1: EndConversationRequest req) (api.post="im/end_conversation"); // 结束会话工单
+
+    // 机器人
+    SendMessageToRobotResponse SendMessageToRobot(1: SendMessageToRobotRequest req) (api.post="/im/send_message_to_robot"); // 给机器人发消息
 }
+

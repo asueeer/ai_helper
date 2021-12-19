@@ -27,7 +27,7 @@ const (
 const (
 	HelperConversationType = "helper" // 客服会话类型
 
-	HelperConvStatusWaiting  = "roboting" // 客服会话状态-等待
+	HelperConvStatusRoboting = "roboting" // 客服会话状态-等待
 	HelperConvStatusChatting = "chatting" // 聊天中
 	HelperConvStatusEnd      = "end"      // 关闭
 

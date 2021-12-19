@@ -26,7 +26,7 @@ func (ss *ConversationService) CreateHelperConversation(ctx context.Context) (*e
 		ConstructConversationEntityRequest{
 			user:     user,
 			convType: common.HelperConversationType,
-			status:   common.HelperConvStatusWaiting,
+			status:   common.HelperConvStatusRoboting,
 		},
 	)
 	// 将该会话持久化到数据库

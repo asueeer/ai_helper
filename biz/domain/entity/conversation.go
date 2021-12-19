@@ -13,12 +13,6 @@ import (
 	"ai_helper/biz/dal/db/repo"
 )
 
-type Participant struct {
-	UserID   int64  `json:"user_id"`
-	HeadURL  string `json:"head_url"`
-	Nickname string `json:"nickname"`
-}
-
 type Conversation struct {
 	ID           int64        `json:"id"`               // 主键自增id,无业务意义
 	ConvID       int64        `json:"conv_id"`          // 会话id, 会话的唯一标识

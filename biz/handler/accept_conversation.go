@@ -22,6 +22,5 @@ func AcceptConversation(c *gin.Context) {
 		common.WriteError(c, err)
 		return
 	}
-
 	c.JSON(200, resp)
 }

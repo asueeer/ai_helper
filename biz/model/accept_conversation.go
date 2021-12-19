@@ -4,6 +4,11 @@ type AcceptConversationRequest struct {
 	ConvID string `form:"conv_id"  json:"conv_id"`
 }
 
+type AcceptConversationData struct {
+	ConvID string `json:"conv_id"`
+}
+
 type AcceptConversationResponse struct {
-	Meta Meta `json:"meta"`
+	Data AcceptConversationData `json:"data"`
+	Meta Meta                   `json:"meta"`
 }

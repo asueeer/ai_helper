@@ -148,6 +148,14 @@ struct SendMessageToRobotData{
     1: String resp_content; // 机器人的回复内容
 }
 
+struct TransToArtificialResponse{
+    1: Meta meta;
+}
+
+struct TransToArtificialRequest{
+    1: string conv_id;
+}
+
 service ImService{
     CreateConversationResponse CreateConversation(1: CreateConversationRequest req) (api.post="/im/create_conversation"); // 创建会话
     LoadConversationDetailResponse LoadConversation(1: LoadConversationDetailRequest req) (api.post="/im/load_conversation_detail"); // 加载会话详情
@@ -157,8 +165,10 @@ service ImService{
     // 二期-增加工单
     AcceptConversationResponse AcceptConversation(1: AcceptConversationRequest req) (api.post="/im/accept_conversation"); // 客服人员接收会话
     EndConversationResponse EndConversation(1: EndConversationRequest req) (api.post="im/end_conversation"); // 结束会话工单
+    TransToArtificialResponse TransToArtificial(1: TransToArtificialRequest req) (api.post="/im/trans_to_arti_conversation") // 游客将会话单转人工
 
     // 机器人
     SendMessageToRobotResponse SendMessageToRobot(1: SendMessageToRobotRequest req) (api.post="/im/send_message_to_robot"); // 给机器人发消息
+
 }
 

@@ -40,6 +40,7 @@ func register(r *gin.Engine) {
 	// v2-会话工单需求
 	r.POST("/api/im/accept_conversation", handler.AcceptConversation)
 	r.POST("/api/im/end_conversation", handler.EndConversation)
+	r.POST("/api/im/trans_to_arti_conversation", handler.TransToArtiConversation)
 
 	r.POST("/api/im/send_robot", handler.SendMessageToRobot)
 }

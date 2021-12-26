@@ -27,7 +27,8 @@ const (
 const (
 	HelperConversationType = "helper" // 客服会话类型
 
-	HelperConvStatusRoboting = "roboting" // 客服会话状态-等待
+	HelperConvStatusRoboting = "roboting" // 客服会话状态-机器人聊天中
+	HelperConvStatusWaiting  = "waiting"  // 客服会话状态-等待
 	HelperConvStatusChatting = "chatting" // 聊天中
 
 	HelperID = 435737 // 客服小助手的用户id

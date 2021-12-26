@@ -73,6 +73,7 @@ func (h *Hub) GetWsKeys(ctx context.Context, uKey string) []string {
 }
 
 func (h *Hub) BatchSendMsgs(ctx context.Context, receiverID int64, msgNotify model.WsMessageResponse) {
+	// 后面需要不止是通过id发送，还应该给固定的角色去发送消息...
 	wsKeys := h.GetWsKeys(ctx, fmt.Sprintf("ws_%d", receiverID))
 	if len(wsKeys) == 0 {
 		return

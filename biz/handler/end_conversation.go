@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/spf13/cast"
+	"log"
 )
 
 // EndConversation [Post] /im/end_conversation
@@ -28,8 +29,9 @@ func EndConversation(c *gin.Context) {
 	{
 		// 给长连接发送消息
 		convAgg, err := aggregate.GetConvAggByID(c, cast.ToInt64(req.ConvID))
-		if err != nil {
-			common.WriteError(c, err)
+		if convAgg == nil || err != nil {
+			log.Printf("GetConvAggByID fail, err: %+v", err)
+			return
 		}
 		wsMsg := convAgg.GetNotifyVisitor(c)
 		ws_handler.TheHub.BatchSendMsgs(c, cast.ToInt64(convAgg.Conv.Creator), wsMsg)

@@ -19,7 +19,7 @@ func (EndConversationService) Execute(ctx context.Context, req *model.EndConvers
 	convRepo := repo.NewConversationRepo()
 	err := convRepo.UpdateConvStatus(ctx, repo.UpdateConvStatusRequest{
 		ConvID:    cast.ToInt64(req.ConvID),
-		Status:    common.HelperConvStatusEnd,
+		Status:    common.HelperConvStatusRoboting,
 		PreStatus: common.HelperConvStatusChatting,
 		Acceptor:  0,
 	})

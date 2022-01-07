@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"ai_helper/biz/common"
 	"ai_helper/biz/domain/entity"
 	"ai_helper/biz/handler/ws_handler"
 	"ai_helper/biz/model"
@@ -36,7 +37,7 @@ func SendMessageCallBack(c *gin.Context) {
 			return
 		}
 		ws_handler.TheHub.BatchSendMsgs(c, msg.ReceiverID, model.WsMessageResponse{
-			Type: 101,
+			Type: common.WsNewMsg,
 			Msg:  msg.ToVo(),
 		})
 	}

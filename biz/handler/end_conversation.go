@@ -35,6 +35,7 @@ func EndConversation(c *gin.Context) {
 		}
 		wsMsg := convAgg.GetNotifyVisitor(c)
 		ws_handler.TheHub.BatchSendMsgs(c, cast.ToInt64(convAgg.Conv.Creator), wsMsg)
+		SendMsg2Helper(c, common.WsEndConv, wsMsg)
 	}
 	c.JSON(200, resp)
 }

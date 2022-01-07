@@ -24,9 +24,7 @@ func CreateConversation(c *gin.Context) {
 	}
 
 	// 给在线客服的长连接里发送消息
-	if resp.Data.IsNew {
-		SendMsg2Helper(c, common.WsNewConv, resp.Data)
-	}
+	SendMsg2Helper(c, common.WsNewConv, resp.Data)
 
 	c.JSON(200, resp)
 }

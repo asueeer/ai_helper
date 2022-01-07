@@ -31,9 +31,6 @@ func (ss *CreateConversationService) CreateHelperConv(ctx context.Context) (resp
 			return nil, common.NewBizErr(common.BizErrCode, err.Error(), err)
 		}
 		if convEntity != nil {
-
-		}
-		if convEntity != nil {
 			err = convEntity.ReOpen(ctx)
 			if err != nil {
 				return nil, common.NewBizErr(common.BizErrCode, err.Error(), err)

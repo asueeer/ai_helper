@@ -1,6 +1,7 @@
 package ws_handler
 
 import (
+	"ai_helper/biz/common"
 	"ai_helper/biz/config"
 	"ai_helper/biz/dal/cache"
 	"ai_helper/biz/model"
@@ -44,6 +45,11 @@ func (h *Hub) Store(ctx context.Context, cli *Client) error {
 	// 2. 将ticket存入redis, 之后根据ticket去hub里找client
 	cache.SAdd(ctx, uKey, wsKey)
 	cache.ExpireAt(ctx, uKey, time.Now().Add(time.Hour*10))
+	if cli.user.IsHelper {
+		// 如果用户是客服, 把他在客服里注册上
+		cache.SAdd(ctx, fmt.Sprintf("ws_%d", common.HelperID), wsKey)
+		cache.ExpireAt(ctx, uKey, time.Now().Add(time.Hour*10))
+	}
 	cli.uKey = uKey
 	cli.wsKey = wsKey
 	return nil

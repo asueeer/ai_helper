@@ -20,15 +20,18 @@ var record = map[string]*val_obj.UserClaims{
 		UserID:   9999999,
 		Nickname: "aaa",
 		HeadURL:  "",
+		IsHelper: true,
 	},
 	"bbb": {
 		UserID:   9999998,
 		Nickname: "bbb",
 		HeadURL:  "",
+		IsHelper: true,
 	},
 	"ccc": {
 		UserID:   9999997,
 		Nickname: "ccc",
+		IsHelper: true,
 	},
 }
 

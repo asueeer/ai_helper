@@ -6,5 +6,6 @@ type UserClaims struct {
 	UserID   int64
 	Nickname string
 	HeadURL  string
+	IsHelper bool
 	jwt.StandardClaims
 }

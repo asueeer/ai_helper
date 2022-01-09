@@ -5,6 +5,7 @@ import "time"
 // sso
 const (
 	UserProfile   = "user"
+	HelperProfile = "be_helper"
 	AuthTokenName = "auth_token"
 )
 

@@ -22,7 +22,7 @@ func (AcceptConversationService) Execute(ctx context.Context, req *model.AcceptC
 	err := convRepo.UpdateConvStatus(ctx, repo.UpdateConvStatusRequest{
 		ConvID:    cast.ToInt64(req.ConvID),
 		Status:    common.HelperConvStatusChatting,
-		PreStatus: common.HelperConvStatusRoboting,
+		PreStatus: common.HelperConvStatusWaiting,
 		Acceptor:  cast.ToInt64(user.UserID),
 	})
 	if err != nil {

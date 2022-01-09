@@ -27,6 +27,7 @@ const (
 // 会话业务相关
 const (
 	HelperConversationType = "helper" // 客服会话类型
+	RobotConversationType  = "robot"
 
 	HelperConvStatusRoboting = "roboting" // 客服会话状态-机器人聊天中
 	HelperConvStatusWaiting  = "waiting"  // 客服会话状态-等待

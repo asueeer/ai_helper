@@ -14,10 +14,7 @@ type CreateConversationService struct {
 }
 
 func (ss *CreateConversationService) Execute(ctx context.Context, req *model.CreateConversationRequest) (resp *model.CreateConversationResponse, err error) {
-	if req.Type == common.HelperConversationType {
-		return ss.CreateHelperConv(ctx)
-	}
-	return nil, common.NewBizErr(common.BizErrCode, "不支持的会话类型", err)
+	return ss.CreateHelperConv(ctx)
 }
 
 func (ss *CreateConversationService) CreateHelperConv(ctx context.Context) (resp *model.CreateConversationResponse, err error) {

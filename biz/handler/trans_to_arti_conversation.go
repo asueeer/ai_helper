@@ -1,6 +1,6 @@
 package handler
 
-// CreateConversation [Post] /im/create_conversation
+// TransToArtiConversation [Post] /im/trans_to_arti_conversation
 import (
 	"ai_helper/biz/common"
 	"ai_helper/biz/model"

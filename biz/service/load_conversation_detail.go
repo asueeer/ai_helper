@@ -161,6 +161,9 @@ func (ss *LoadConversationDetailService) GetViewerID(ctx context.Context, req *m
 		return common.HelperID, nil
 	}
 	user := common.GetUser(ctx)
+	if user.IsHelper {
+		return common.HelperID, nil
+	}
 	return user.UserID, nil
 }
 

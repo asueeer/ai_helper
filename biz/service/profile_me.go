@@ -19,6 +19,7 @@ func (ss *ProfileMeService) Execute(ctx context.Context, req *model.ProfileMeReq
 				UserID:   cast.ToString(user.UserID),
 				Nickname: user.Nickname,
 				HeadURL:  user.HeadURL,
+				IsHelper: user.IsHelper,
 			},
 		},
 	}

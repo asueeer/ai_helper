@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cast"
 )
 
-// SendMsg2Helper 给客服发长连接消息
+// 给客服发长连接消息
 func SendMsg2Helper(ctx context.Context, type_ int, msg interface{}) {
 	receiverID := common.HelperID
 	ws_handler.TheHub.BatchSendMsgs(ctx, cast.ToInt64(receiverID), model.WsMessageResponse{

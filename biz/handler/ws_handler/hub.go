@@ -38,6 +38,11 @@ func (h *Hub) Store(ctx context.Context, cli *Client) error {
 
 	wsKey := fmt.Sprintf("user_id: %d, rand: %d", cli.user.UserID, config.GenerateIDInt64())
 	uKey := fmt.Sprintf("ws_%d", cli.user.UserID)
+	if cli.user.IsHelper {
+		// 如果用户是客服, 把他在客服里注册上
+		wsKey = fmt.Sprintf("user_id: %d, rand: %d", common.HelperID, config.GenerateIDInt64())
+		uKey = fmt.Sprintf("ws_%d", common.HelperID)
+	}
 	// 1. 在hub里注册client
 	h.manager.Store(wsKey, cli)
 	h.cnt++
@@ -45,11 +50,6 @@ func (h *Hub) Store(ctx context.Context, cli *Client) error {
 	// 2. 将ticket存入redis, 之后根据ticket去hub里找client
 	cache.SAdd(ctx, uKey, wsKey)
 	cache.ExpireAt(ctx, uKey, time.Now().Add(time.Hour*10))
-	if cli.user.IsHelper {
-		// 如果用户是客服, 把他在客服里注册上
-		cache.SAdd(ctx, fmt.Sprintf("ws_%d", common.HelperID), wsKey)
-		cache.ExpireAt(ctx, uKey, time.Now().Add(time.Hour*10))
-	}
 	cli.uKey = uKey
 	cli.wsKey = wsKey
 	return nil
@@ -86,6 +86,7 @@ func (h *Hub) BatchSendMsgs(ctx context.Context, receiverID int64, msgNotify mod
 		return
 	}
 	for i := range wsKeys {
+		log.Printf("wsKey is %+v", wsKeys[i])
 		cli := h.Load(wsKeys[i])
 		if cli == nil {
 			continue

@@ -17,5 +17,6 @@ type (
 		UserID   string `json:"user_id"`
 		Nickname string `json:"nickname"`
 		HeadURL  string `json:"head_url"`
+		IsHelper bool   `json:"is_helper"`
 	}
 )

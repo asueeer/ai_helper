@@ -21,13 +21,18 @@ func (RegisterVisitorService) Execute(ctx context.Context, req *model.RegisterVi
 	if userID == 0 {
 		userID = config.GenerateIDInt64()
 	}
-	token, err := middleware.JwtDefaultClient.GenerateToken(val_obj.UserClaims{
+
+	claims := val_obj.UserClaims{
 		UserID:   userID,
 		Nickname: "游客" + req.FingerPrint,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expiresAt,
 		},
-	})
+	}
+	if record[cast.ToString(userID)] != nil {
+		claims.IsHelper = true
+	}
+	token, err := middleware.JwtDefaultClient.GenerateToken(claims)
 	return &model.RegisterVisitorResponse{
 		Meta: common.MetaOk,
 		Data: model.RegisterVisitorData{

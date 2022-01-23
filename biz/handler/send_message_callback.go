@@ -2,7 +2,6 @@ package handler
 
 import (
 	"ai_helper/biz/common"
-	"ai_helper/biz/domain/aggregate"
 	"ai_helper/biz/domain/entity"
 	"ai_helper/biz/handler/ws_handler"
 	"ai_helper/biz/model"
@@ -38,15 +37,7 @@ func SendMessageCallBack(c *gin.Context) {
 			log.Printf("msg is nil")
 			return
 		}
-		convAgg, err := aggregate.GetConvAggByID(c, msg.ConvID)
-		if err != nil {
-			log.Printf("aggregate.GetConvAggByID fail, err: %+v", err)
-		}
 		ws_handler.TheHub.BatchSendMsgs(c, msg.ReceiverID, model.WsMessageResponse{
-			Type: common.WsNewMsg,
-			Msg:  msg.ToVo(),
-		})
-		ws_handler.TheHub.BatchSendMsgs(c, convAgg.Conv.Acceptor, model.WsMessageResponse{
 			Type: common.WsNewMsg,
 			Msg:  msg.ToVo(),
 		})

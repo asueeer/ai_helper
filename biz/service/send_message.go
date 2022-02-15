@@ -106,6 +106,7 @@ func (ss *SendMessageService) SendMsg(ctx context.Context, req *model.SendMessag
 		Timestamp: util.Micro2Sec(req.TimestampMs),
 		SeqID:     req.TimestampMs,
 	}
+
 	msgFromEntity, err := messageDomainService.SendMessage(ctx, sendMsgReq)
 	return msgFromEntity, err
 }

@@ -22,6 +22,11 @@ var Record = map[string]*val_obj.UserClaims{
 		Nickname: "ccc",
 		IsHelper: true,
 	},
+	"435737": {
+		UserID:   435737,
+		Nickname: "客服小助手",
+		IsHelper: true,
+	},
 }
 
 func IsHelper(userID string) bool {

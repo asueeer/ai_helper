@@ -7,6 +7,7 @@ import (
 	"ai_helper/biz/domain/entity"
 	"context"
 	"encoding/json"
+	"log"
 	"time"
 )
 
@@ -63,6 +64,7 @@ func (ss *MessageService) ConstructMessageAggregate(ctx context.Context, req Sen
 	}
 	// 以客服的身份发消息
 	if req.Role == common.ConvRoleHelper {
+		log.Println("是客服呀")
 		msgAgg.MessageFrom.SenderID = common.HelperID
 		msgAgg.MessageFrom.ReceiverID = msgAgg.Conv.Creator
 	}

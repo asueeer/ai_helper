@@ -17,13 +17,13 @@ type LoginService struct {
 
 var record = map[string]*val_obj.UserClaims{
 	"aaa": {
-		UserID:   9999999,
+		UserID:   common.HelperID,
 		Nickname: "aaa",
 		HeadURL:  "",
 		IsHelper: true,
 	},
 	"bbb": {
-		UserID:   9999998,
+		UserID:   common.HelperID,
 		Nickname: "bbb",
 		HeadURL:  "",
 		IsHelper: true,

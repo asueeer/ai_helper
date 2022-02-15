@@ -51,6 +51,15 @@ func (ss *SendMessageService) checkParams(ctx context.Context, req *model.SendMe
 		return errors.New("似乎没有这个会话的权限????")
 	}
 
+	// 前端应该把用户的身份传进来, 看当前用户是客服还是游客,
+	// 但是由于没有明确和前端说清楚这件事, 前端就一直没干
+	// 所以后端就把这件事给做了
+	if user.IsHelper {
+		req.Role = common.ConvRoleHelper
+	} else {
+		req.Role = common.ConvRoleVisitor
+	}
+
 	return nil
 }
 

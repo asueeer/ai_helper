@@ -35,6 +35,7 @@ func AcceptConversation(c *gin.Context) {
 			c.JSON(200, resp)
 			return
 		}
+		log.Printf("aggregate.GetConvAggByID is %+v", convAgg.Conv.Creator)
 		wsMsg := convAgg.GetNotifyVisitor(c)
 		ws_handler.TheHub.BatchSendMsgs(c, cast.ToInt64(convAgg.Conv.Creator), wsMsg)
 	}

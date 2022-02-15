@@ -15,31 +15,11 @@ import (
 type LoginService struct {
 }
 
-var record = map[string]*val_obj.UserClaims{
-	"aaa": {
-		UserID:   common.HelperID,
-		Nickname: "aaa",
-		HeadURL:  "",
-		IsHelper: true,
-	},
-	"bbb": {
-		UserID:   common.HelperID,
-		Nickname: "bbb",
-		HeadURL:  "",
-		IsHelper: true,
-	},
-	"ccc": {
-		UserID:   9999997,
-		Nickname: "ccc",
-		IsHelper: true,
-	},
-}
-
 func (LoginService) Execute(ctx context.Context, req *model.LoginRequest) (*model.LoginResponse, error) {
-	if req.Password != "123" || record[req.Username] == nil {
+	if req.Password != "123" || common.Record[req.Username] == nil {
 		return nil, common.NewBizErr(common.BizErrCode, "wrong pwd or username", nil)
 	}
-	user := record[req.Username]
+	user := common.Record[req.Username]
 	expiresAt := time.Now().Add(time.Hour * 24 * 365).Unix()
 	userID := cast.ToInt64(user)
 	if userID == 0 {

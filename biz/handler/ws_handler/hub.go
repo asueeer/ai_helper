@@ -35,11 +35,12 @@ func (h *Hub) Store(ctx context.Context, cli *Client) error {
 	if h.cnt > maxConnCnt {
 		return errors.New("已经超过了最大连接数")
 	}
-
+	log.Printf("user_%+v上线啦\n", cli.user.UserID)
 	wsKey := fmt.Sprintf("user_id: %d, rand: %d", cli.user.UserID, config.GenerateIDInt64())
 	uKey := fmt.Sprintf("ws_%d", cli.user.UserID)
 	if cli.user.IsHelper {
 		// 如果用户是客服, 把他在客服里注册上
+		log.Printf("客服在登陆")
 		wsKey = fmt.Sprintf("user_id: %d, rand: %d", common.HelperID, config.GenerateIDInt64())
 		uKey = fmt.Sprintf("ws_%d", common.HelperID)
 	}
@@ -49,6 +50,7 @@ func (h *Hub) Store(ctx context.Context, cli *Client) error {
 
 	// 2. 将ticket存入redis, 之后根据ticket去hub里找client
 	cache.SAdd(ctx, uKey, wsKey)
+	log.Printf("uKey: %+v\n", uKey)
 	cache.ExpireAt(ctx, uKey, time.Now().Add(time.Hour*10))
 	cli.uKey = uKey
 	cli.wsKey = wsKey
@@ -83,6 +85,7 @@ func (h *Hub) BatchSendMsgs(ctx context.Context, receiverID int64, msgNotify mod
 	log.Printf("给长连接发送消息, receiverID is %+v", receiverID)
 	wsKeys := h.GetWsKeys(ctx, fmt.Sprintf("ws_%d", receiverID))
 	if len(wsKeys) == 0 {
+		log.Printf("receiverID_%+v不在线\n", receiverID)
 		return
 	}
 	for i := range wsKeys {

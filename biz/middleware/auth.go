@@ -5,6 +5,7 @@ import (
 	"ai_helper/biz/config"
 	"ai_helper/biz/domain/val_obj"
 	"ai_helper/biz/model"
+	"github.com/spf13/cast"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -32,7 +33,7 @@ func Auth(jwtClient *JwtClient, noAuth map[string]bool) gin.HandlerFunc {
 					UserID:   claims.UserID,
 					Nickname: claims.Nickname,
 					HeadURL:  claims.HeadURL,
-					IsHelper: true,
+					IsHelper: common.IsHelper(cast.ToString(claims.UserID)),
 				},
 			)
 		})

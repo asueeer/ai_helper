@@ -9,6 +9,7 @@ import (
 	"context"
 	"github.com/golang-jwt/jwt"
 	"github.com/spf13/cast"
+	"log"
 	"time"
 )
 
@@ -29,7 +30,8 @@ func (RegisterVisitorService) Execute(ctx context.Context, req *model.RegisterVi
 			ExpiresAt: expiresAt,
 		},
 	}
-	if record[cast.ToString(userID)] != nil {
+	if common.Record[cast.ToString(userID)] != nil {
+		log.Printf("record[cast.ToString(userID)]: %+v\n", common.Record[cast.ToString(userID)])
 		claims.IsHelper = true
 	}
 	token, err := middleware.JwtDefaultClient.GenerateToken(claims)

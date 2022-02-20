@@ -53,5 +53,6 @@ func (ss *CreateConversationService) CreateHelperConv(ctx context.Context) (resp
 		},
 	}
 	resp.Data.IsNew = true
+	resp.Data.Status = common.HelperConvStatusRoboting
 	return resp, nil
 }

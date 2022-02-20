@@ -33,6 +33,7 @@ func (s TransToArtiConversationService) Execute(ctx *gin.Context, req *model.Tra
 			// 有坑 fixme 这个结构体是给长连接发消息用的，并不是每次都需要这样装载信息
 			ConvID: cast.ToString(req.ConvID),
 			IsNew:  true,
+			Status: common.HelperConvStatusWaiting,
 		},
 	}, nil
 }

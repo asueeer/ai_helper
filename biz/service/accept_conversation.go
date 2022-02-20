@@ -30,6 +30,10 @@ func (AcceptConversationService) Execute(ctx context.Context, req *model.AcceptC
 	}
 
 	return &model.AcceptConversationResponse{
+		Data: model.AcceptConversationData{
+			ConvID: req.ConvID,
+			Status: common.HelperConvStatusChatting,
+		},
 		Meta: common.MetaOk,
 	}, nil
 }

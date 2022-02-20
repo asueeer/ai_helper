@@ -6,6 +6,7 @@ type AcceptConversationRequest struct {
 
 type AcceptConversationData struct {
 	ConvID string `json:"conv_id"`
+	Status string `json:"status"`
 }
 
 type AcceptConversationResponse struct {

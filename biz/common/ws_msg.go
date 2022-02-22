@@ -6,6 +6,6 @@ const (
 	WsLoadConvs   = 2
 	WsNewMsg      = 101
 	WsNewConv     = 102
-	WsNewArtiConv = 103
+	WsNewArtiConv = 102
 	WsEndConv     = 104
 )

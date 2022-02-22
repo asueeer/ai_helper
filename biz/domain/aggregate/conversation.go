@@ -28,10 +28,10 @@ func (agg ConversationAggregate) GetNotifyVisitor(ctx context.Context) model.WsM
 		},
 	}
 	if agg.Conv.Status == common.HelperConvStatusChatting {
-		wsMsg.Type = 103
+		wsMsg.Type = 102
 	}
 	if agg.Conv.Status == common.HelperConvStatusRoboting {
-		wsMsg.Type = 104
+		wsMsg.Type = 102
 	}
 	return wsMsg
 }

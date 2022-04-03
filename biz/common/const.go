@@ -35,7 +35,8 @@ const (
 
 	HelperID = 435737 // 客服小助手的用户id
 
-	ConvRoleCreator = "creator"   // 用户在会话中的角色-创建者
-	ConvRoleVisitor = "visitor"   // 游客身份
-	ConvRoleHelper  = "be_helper" // 后台客服
+	ConvRoleCreator = "creator"    // 用户在会话中的角色-创建者
+	ConvRoleVisitor = "visitor"    // 游客身份
+	ConvRoleHelper  = "be_helper"  // 后台客服
+	ConvRoleRobot   = "sys_helper" // 机器人小助手
 )

@@ -45,6 +45,7 @@ type MessageFrom struct {
 	Type       string     `json:"type"`                  // 消息类型
 	SeqID      int64      `json:"seq_id"`                // 用于保序的序列号
 	CreateAt   time.Time  `json:"create_at"`             // 创建时间戳
+	Role       string     `json:"role"`                  // 发消息人的角色
 }
 
 func (f *MessageFrom) Persist(ctx context.Context) error {

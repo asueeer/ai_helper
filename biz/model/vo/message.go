@@ -18,4 +18,6 @@ type MsgContent struct {
 	ImgURL   *string `json:"img_url,omitempty"`   // 图片链接
 	AudioURL *string `json:"audio_url,omitempty"` // 语音链接
 	VideoURL *string `json:"video_url,omitempty"` // 视频链接
+	Link     *string `json:"link,omitempty"`      // 业务名对应的网站
+	End      *string `json:"end"`                 // 诊断结束标志
 }

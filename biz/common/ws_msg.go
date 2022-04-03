@@ -8,4 +8,5 @@ const (
 	WsNewConv     = 102
 	WsNewArtiConv = 102
 	WsEndConv     = 104
+	WsRobotMsg    = 105
 )

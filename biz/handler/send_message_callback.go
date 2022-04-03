@@ -37,9 +37,17 @@ func SendMessageCallBack(c *gin.Context) {
 			log.Printf("msg is nil")
 			return
 		}
-		ws_handler.TheHub.BatchSendMsgs(c, msg.ReceiverID, model.WsMessageResponse{
-			Type: common.WsNewMsg,
-			Msg:  msg.ToVo(),
-		})
+		if msg.Role == common.ConvRoleRobot {
+			ws_handler.TheHub.BatchSendMsgs(c, msg.ReceiverID, model.WsMessageResponse{
+				Type: common.WsRobotMsg,
+				Msg:  msg.ToVo(),
+			})
+		} else {
+			ws_handler.TheHub.BatchSendMsgs(c, msg.ReceiverID, model.WsMessageResponse{
+				Type: common.WsNewMsg,
+				Msg:  msg.ToVo(),
+			})
+		}
+
 	}
 }

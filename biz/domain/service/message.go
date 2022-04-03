@@ -55,6 +55,7 @@ func (ss *MessageService) ConstructMessageAggregate(ctx context.Context, req Sen
 			ReceiverID: req.ReceiverID,
 			Type:       req.Type,
 			CreateAt:   time.Now(),
+			Role:       req.Role,
 		},
 	}
 	// 装载convEntity
@@ -63,7 +64,7 @@ func (ss *MessageService) ConstructMessageAggregate(ctx context.Context, req Sen
 		return nil, err
 	}
 	// 以客服的身份发消息
-	if req.Role == common.ConvRoleHelper {
+	if req.Role == common.ConvRoleHelper || req.Role == common.ConvRoleRobot {
 		log.Println("是客服呀")
 		msgAgg.MessageFrom.SenderID = common.HelperID
 		msgAgg.MessageFrom.ReceiverID = msgAgg.Conv.Creator

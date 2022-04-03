@@ -6,6 +6,7 @@ import (
 	"ai_helper/biz/handler/ws_handler"
 	"ai_helper/biz/model"
 	"ai_helper/biz/service"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"log"
@@ -37,6 +38,7 @@ func SendMessageCallBack(c *gin.Context) {
 			log.Printf("msg is nil")
 			return
 		}
+		fmt.Printf("role: %+v\n", msg.Role)
 		if msg.Role == common.ConvRoleRobot {
 			ws_handler.TheHub.BatchSendMsgs(c, msg.ReceiverID, model.WsMessageResponse{
 				Type: common.WsRobotMsg,

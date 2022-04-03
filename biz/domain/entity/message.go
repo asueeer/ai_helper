@@ -22,6 +22,8 @@ type MsgContent struct {
 	ImgURL   *string `json:"img_url,omitempty"`
 	AudioURL *string `json:"audio_url,omitempty"`
 	VideoURL *string `json:"video_url,omitempty"`
+	Link     *string `json:"link,omitempty"`
+	End      *bool   `json:"end,omitempty"`
 }
 
 func (content *MsgContent) ToVo() vo.MsgContent {

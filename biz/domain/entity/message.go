@@ -108,6 +108,8 @@ func (f *MessageFrom) ToVo() *vo.Message {
 		ReceiverID: cast.ToString(f.ReceiverID),
 		Content: vo.MsgContent{
 			Text: f.Content.Text,
+			Link: f.Content.Link,
+			End:  f.Content.End,
 		},
 		Type:   f.Type,
 		Status: f.Status,

@@ -16,7 +16,7 @@ import (
 
 type UserID int64
 
-var maxConnCnt = 150
+var maxConnCnt = 1500
 
 var TheHub *Hub
 

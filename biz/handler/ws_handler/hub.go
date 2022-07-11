@@ -51,7 +51,7 @@ func (h *Hub) Store(ctx context.Context, cli *Client) error {
 	// 2. 将ticket存入redis, 之后根据ticket去hub里找client
 	cache.SAdd(ctx, uKey, wsKey)
 	log.Printf("uKey: %+v\n", uKey)
-	cache.ExpireAt(ctx, uKey, time.Now().Add(time.Hour*10))
+	cache.ExpireAt(ctx, uKey, time.Now().Add(time.Hour*24*365))
 	cli.uKey = uKey
 	cli.wsKey = wsKey
 	return nil

@@ -30,12 +30,13 @@ type MsgContent struct {
 
 func (content *MsgContent) ToVo() vo.MsgContent {
 	return vo.MsgContent{
-		Text:     content.Text,
-		RichText: content.RichText,
-		ImgURL:   content.ImgURL,
-		AudioURL: content.AudioURL,
-		VideoURL: content.VideoURL,
-		Options:  content.Options,
+		Text:        content.Text,
+		RichText:    content.RichText,
+		ImgURL:      content.ImgURL,
+		AudioURL:    content.AudioURL,
+		VideoURL:    content.VideoURL,
+		Options:     content.Options,
+		ServiceName: content.ServiceName,
 	}
 }
 

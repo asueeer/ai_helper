@@ -17,13 +17,14 @@ const (
 )
 
 type MsgContent struct {
-	Text     *string `json:"text,omitempty"`
-	RichText *string `json:"rich_text,omitempty"`
-	ImgURL   *string `json:"img_url,omitempty"`
-	AudioURL *string `json:"audio_url,omitempty"`
-	VideoURL *string `json:"video_url,omitempty"`
-	Link     *string `json:"link,omitempty"`
-	End      *bool   `json:"end,omitempty"`
+	Text     *string  `json:"text,omitempty"`
+	RichText *string  `json:"rich_text,omitempty"`
+	ImgURL   *string  `json:"img_url,omitempty"`
+	AudioURL *string  `json:"audio_url,omitempty"`
+	VideoURL *string  `json:"video_url,omitempty"`
+	Link     *string  `json:"link,omitempty"`
+	End      *bool    `json:"end,omitempty"`
+	Options  []string `json:"options,omitempty"`
 }
 
 func (content *MsgContent) ToVo() vo.MsgContent {
@@ -33,6 +34,7 @@ func (content *MsgContent) ToVo() vo.MsgContent {
 		ImgURL:   content.ImgURL,
 		AudioURL: content.AudioURL,
 		VideoURL: content.VideoURL,
+		Options:  content.Options,
 	}
 }
 

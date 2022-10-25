@@ -17,14 +17,15 @@ const (
 )
 
 type MsgContent struct {
-	Text     *string  `json:"text,omitempty"`
-	RichText *string  `json:"rich_text,omitempty"`
-	ImgURL   *string  `json:"img_url,omitempty"`
-	AudioURL *string  `json:"audio_url,omitempty"`
-	VideoURL *string  `json:"video_url,omitempty"`
-	Link     *string  `json:"link,omitempty"`
-	End      *bool    `json:"end,omitempty"`
-	Options  []string `json:"options,omitempty"`
+	Text        *string  `json:"text,omitempty"`
+	RichText    *string  `json:"rich_text,omitempty"`
+	ImgURL      *string  `json:"img_url,omitempty"`
+	AudioURL    *string  `json:"audio_url,omitempty"`
+	VideoURL    *string  `json:"video_url,omitempty"`
+	Link        *string  `json:"link,omitempty"`
+	End         *bool    `json:"end,omitempty"`
+	Options     []string `json:"options,omitempty"`
+	ServiceName *string  `json:"service_name"`
 }
 
 func (content *MsgContent) ToVo() vo.MsgContent {
@@ -109,9 +110,11 @@ func (f *MessageFrom) ToVo() *vo.Message {
 		SenderID:   cast.ToString(f.SenderID),
 		ReceiverID: cast.ToString(f.ReceiverID),
 		Content: vo.MsgContent{
-			Text: f.Content.Text,
-			Link: f.Content.Link,
-			End:  f.Content.End,
+			Text:        f.Content.Text,
+			Link:        f.Content.Link,
+			End:         f.Content.End,
+			Options:     f.Content.Options,
+			ServiceName: f.Content.ServiceName,
 		},
 		Type:   f.Type,
 		Status: f.Status,

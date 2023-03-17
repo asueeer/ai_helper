@@ -29,7 +29,7 @@ func SendMessageCallBack(c *gin.Context) {
 			log.Printf("SendMessageService report, ss.ExecuteCallback: %+v", err)
 		}
 	}
-	go 给NLP机器人发消息(req)
+	给NLP机器人发消息(req)
 	{
 		// 如果用户在线, 就给该长连接发一条消息
 		obj := c.Value("msg")

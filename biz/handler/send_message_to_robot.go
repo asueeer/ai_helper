@@ -4,8 +4,13 @@ import (
 	"ai_helper/biz/common"
 	"ai_helper/biz/model"
 	"ai_helper/biz/service"
+	"bytes"
+	"encoding/json"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
+	"io/ioutil"
+	"net/http"
 )
 
 // SendMessageToRobot [Post] /api/im/send_message_to_robot
@@ -23,5 +28,40 @@ func SendMessageToRobot(c *gin.Context) {
 		return
 	}
 
+	go func() {
+		url := "https://miner.picp.net/chatBot"
+		method := "GET"
+
+		var buf bytes.Buffer
+
+		err = json.NewEncoder(&buf).Encode(req)
+		if err != nil {
+			fmt.Printf("err: %+v\n", err)
+			return
+		}
+
+		client := &http.Client{}
+		req, err := http.NewRequest(method, url, &buf)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		req.Header.Add("Content-Type", "application/json")
+
+		res, err := client.Do(req)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		defer res.Body.Close()
+
+		body, err := ioutil.ReadAll(res.Body)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		fmt.Println(string(body))
+	}()
 	c.JSON(200, resp)
 }

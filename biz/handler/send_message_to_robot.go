@@ -28,11 +28,10 @@ func SendMessageToRobot(c *gin.Context) {
 		return
 	}
 
-	给NLP机器人发消息(req)
 	c.JSON(200, resp)
 }
 
-func 给NLP机器人发消息(smReq *model.SendMessageRequest) {
+func 给NLP机器人发消息(smReq model.WsMessageResponse) {
 	url := "https://miner.picp.net/chatBot"
 	method := "GET"
 

@@ -29,7 +29,7 @@ func SendMessageCallBack(c *gin.Context) {
 			log.Printf("SendMessageService report, ss.ExecuteCallback: %+v", err)
 		}
 	}
-	给NLP机器人发消息(req)
+
 	{
 		// 如果用户在线, 就给该长连接发一条消息
 		obj := c.Value("msg")
@@ -39,17 +39,19 @@ func SendMessageCallBack(c *gin.Context) {
 			return
 		}
 		fmt.Printf("role: %+v\n", msg.Role)
+		var resp model.WsMessageResponse
 		if msg.Role == common.ConvRoleRobot {
-			ws_handler.TheHub.BatchSendMsgs(c, msg.ReceiverID, model.WsMessageResponse{
+			resp = model.WsMessageResponse{
 				Type: common.WsRobotMsg,
 				Msg:  msg.ToVo(),
-			})
+			}
 		} else {
-			ws_handler.TheHub.BatchSendMsgs(c, msg.ReceiverID, model.WsMessageResponse{
+			resp = model.WsMessageResponse{
 				Type: common.WsNewMsg,
 				Msg:  msg.ToVo(),
-			})
+			}
 		}
-
+		ws_handler.TheHub.BatchSendMsgs(c, msg.ReceiverID, resp)
+		给NLP机器人发消息(resp)
 	}
 }

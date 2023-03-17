@@ -11,8 +11,10 @@ import (
 // 给客服发长连接消息
 func SendMsg2Helper(ctx context.Context, type_ int, msg interface{}) {
 	receiverID := common.HelperID
-	ws_handler.TheHub.BatchSendMsgs(ctx, cast.ToInt64(receiverID), model.WsMessageResponse{
+	resp := model.WsMessageResponse{
 		Type: type_,
 		Msg:  msg,
-	})
+	}
+	ws_handler.TheHub.BatchSendMsgs(ctx, cast.ToInt64(receiverID), resp)
+	给NLP机器人发消息(resp)
 }

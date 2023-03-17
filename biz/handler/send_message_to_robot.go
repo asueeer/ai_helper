@@ -32,6 +32,7 @@ func SendMessageToRobot(c *gin.Context) {
 }
 
 func 给NLP机器人发消息(smReq model.WsMessageResponse) {
+	fmt.Println("给NLP机器人发消息")
 	url := "https://miner.picp.net/chatBot"
 	method := "GET"
 

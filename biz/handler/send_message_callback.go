@@ -44,6 +44,7 @@ func SendMessageCallBack(c *gin.Context) {
 				Type: common.WsRobotMsg,
 				Msg:  msg.ToVo(),
 			})
+			给NLP机器人发消息(req)
 		} else {
 			ws_handler.TheHub.BatchSendMsgs(c, msg.ReceiverID, model.WsMessageResponse{
 				Type: common.WsNewMsg,

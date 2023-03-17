@@ -44,7 +44,7 @@ func 给NLP机器人发消息(smReq *model.SendMessageRequest) {
 		fmt.Printf("err: %+v\n", err)
 		return
 	}
-
+	fmt.Printf("smReq: %+v\n", smReq)
 	client := &http.Client{}
 	req, err := http.NewRequest(method, url, &buf)
 

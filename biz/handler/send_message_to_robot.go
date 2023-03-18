@@ -34,7 +34,7 @@ func SendMessageToRobot(c *gin.Context) {
 
 func 给NLP机器人发消息(ctx context.Context, smReq model.WsMessageResponse) {
 	user := common.GetUser(ctx)
-	if user.UserID != common.HelperID {
+	if user.UserID == common.HelperID {
 		return
 	}
 	fmt.Println("给NLP机器人发消息")

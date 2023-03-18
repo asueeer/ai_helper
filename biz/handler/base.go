@@ -16,5 +16,5 @@ func SendMsg2Helper(ctx context.Context, type_ int, msg interface{}) {
 		Msg:  msg,
 	}
 	ws_handler.TheHub.BatchSendMsgs(ctx, cast.ToInt64(receiverID), resp)
-	给NLP机器人发消息(resp)
+	给NLP机器人发消息(ctx, resp)
 }

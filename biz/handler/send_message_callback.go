@@ -52,6 +52,7 @@ func SendMessageCallBack(c *gin.Context) {
 			}
 		}
 		ws_handler.TheHub.BatchSendMsgs(c, msg.ReceiverID, resp)
-		给NLP机器人发消息(resp)
+
+		给NLP机器人发消息(c, resp)
 	}
 }

@@ -5,6 +5,7 @@ import (
 	"ai_helper/biz/model"
 	"ai_helper/biz/service"
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -31,7 +32,11 @@ func SendMessageToRobot(c *gin.Context) {
 	c.JSON(200, resp)
 }
 
-func 给NLP机器人发消息(smReq model.WsMessageResponse) {
+func 给NLP机器人发消息(ctx context.Context, smReq model.WsMessageResponse) {
+	user := common.GetUser(ctx)
+	if user.UserID != common.HelperID {
+		return
+	}
 	fmt.Println("给NLP机器人发消息")
 	url := "https://miner.picp.net/chatBot"
 	method := "GET"
